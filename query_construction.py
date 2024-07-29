@@ -1,9 +1,19 @@
 import sys
 import os
 import regex
-from nltk.corpus import stopwords
-import nltk
-nltk.download('stopwords')
+
+
+global_stopwords = set()
+
+
+def read_file(file_path, encoding='utf-8'):
+    try:
+        with open(file_path, 'r', encoding=encoding) as file:
+            return file.read()
+    except UnicodeDecodeError:
+        # Try a different encoding if UTF-8 fails
+        with open(file_path, 'r', encoding='iso-8859-1') as file:
+            return file.read()
 
 
 def preprocess_text(text):
@@ -20,9 +30,8 @@ def preprocess_text(text):
     
     # split into words and remove stopwords
     words = text.split()
-    stop_words = set(stopwords.words('english'))
-    filtered_words = [word for word in words if word.lower() not in stop_words]
-
+    filtered_words = [word.lower() for word in words if word.lower() not in global_stopwords]
+    
     return ' '.join(filtered_words)
 
 
@@ -32,23 +41,20 @@ def preprocess_bug_report(bug_report_path, bug_report):
     # gather bug report title and description
     title_path = os.path.join(bug_report_path, 'title.txt')
     description_path = os.path.join(bug_report_path, 'description.txt')
-    with open(title_path, 'r') as file:
-        title = file.read()
-    with open(description_path, 'r') as file:
-        description = file.read()
+    title = read_file(title_path)
+    description = read_file(description_path)
     
     # gather image descriptions and content
     images_info = ""
     files = sorted(os.listdir(bug_report_path))
     for file_name in files:
-        if "ImageDescription.txt" in file_name or "ImageContent.txt" in file_name:
+        if "ImageContent.txt" in file_name:
             file_path = os.path.join(bug_report_path, file_name)
-            with open(file_path, 'r') as file:
-                file_content = file.read()
-                images_info += file_content + "\n"
+            file_content = read_file(file_path)
+            images_info += file_content + "\n"
     
     # preprocessing the bug report text
-    baseline_query = preprocess_text(title + "\n" + description)
+    baseline_query = preprocess_text(title + " " + description)
     extended_query = baseline_query + " " + preprocess_text(images_info)
     
     # save baseline query to file
@@ -71,7 +77,16 @@ def preprocess_project(project_path):
     	preprocess_bug_report(bug_report_path, bug_report)
 
 
+# read the stopwords and store them globally
+def load_stopwords(file_path):
+    global global_stopwords
+    with open(file_path, 'r') as file:
+        global_stopwords = set(word.strip() for word in file)
+
+
 def main(projects_root, range_str=None):
+
+    load_stopwords("stop_words_english.txt")
 
     # process projects in given range
     if range_str:
@@ -102,4 +117,5 @@ if __name__ == "__main__":
     range_str = sys.argv[2] if len(sys.argv) == 3 else None
 
     main(directory, range_str)
+
 
