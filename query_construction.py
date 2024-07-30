@@ -21,18 +21,21 @@ def preprocess_text(text):
     # remove urls
     text = regex.sub(r'https?://\S+|www\.\S+', '', text)
     
-    # split camelCase while keeping acronyms
+    # split camelCase and snake_case while keeping acronyms
     text = regex.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
     text = regex.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', text)
-    
-    # remove underscores, punctuation, numbers
-    text = regex.sub(r"_|[\s]+|[^\w\s]|[\d]+", " ", text)
+    text = text.replace('_', ' ')
     
     # split into words and remove stopwords
     words = text.split()
-    filtered_words = [word.lower() for word in words if word.lower() not in global_stopwords]
+    words = [word for word in words if word.lower() not in global_stopwords]
+    text = ' '.join(words)
     
-    return ' '.join(filtered_words)
+    # remove punctuation, numbers
+    text = regex.sub(r"[\s]+|[^\w\s]|[\d]+", " ", text)
+    
+    # split into words and remove stopwords
+    return ' '.join(text.split()).lower()
 
 
 def preprocess_bug_report(bug_report_path, bug_report):
