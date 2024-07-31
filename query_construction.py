@@ -1,9 +1,14 @@
+import argparse
 import sys
 import os
 import regex
+from nltk.stem import PorterStemmer
+from nltk import download
+download('punkt')
 
 
 global_stopwords = set()
+global_use_stemming = False
 
 
 def read_file(file_path, encoding='utf-8'):
@@ -18,6 +23,9 @@ def read_file(file_path, encoding='utf-8'):
 
 def preprocess_text(text):
 
+    # initialize stemmer if needed
+    stemmer = PorterStemmer() if global_use_stemming else None
+
     # remove urls and the markdown link
     text = regex.sub(r'\!\[.*?\]\(https?://\S+?\)', '', text)
     
@@ -26,11 +34,14 @@ def preprocess_text(text):
     text = regex.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', text)
     text = text.replace('_', ' ')
     
-    # convert to lowercase
-    text = text.lower()
+    # convert to lowercase and split
+    words = text.lower().split()
+    
+    # perform optional stemming
+    if global_use_stemming:
+        words = [stemmer.stem(word) for word in words]
     
     # remove stopwords
-    words = text.split()
     words = [word for word in words if word not in global_stopwords]
     text = ' '.join(words)
     
@@ -98,7 +109,11 @@ def main(projects_root, range_str=None):
 
     # process projects in given range
     if range_str:
-        start, end = map(int, range_str.split(':'))
+        try:
+            start, end = map(int, range_str.split(':'))
+        except ValueError:
+            print("Error: Range must be in the format 'start:end' where both start and end are integers.")
+            sys.exit(1)
         
         for project in range(start, end + 1):
             project_path = os.path.join(projects_root, str(project))
@@ -116,14 +131,15 @@ def main(projects_root, range_str=None):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
-        print("Usage: python3 query_construction.py <directory> [range]")
-        sys.exit(1)
-    
-    # Command line arguments
-    directory = sys.argv[1]
-    range_str = sys.argv[2] if len(sys.argv) == 3 else None
+    parser = argparse.ArgumentParser(description="Text preprocesssing")
+    parser.add_argument("directory", type=str, help="The directory to process")
+    parser.add_argument("--range", type=str, help="Optional range in the format 'start:end'", default=None)
+    parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
-    main(directory, range_str)
+    args = parser.parse_args()
+    global_use_stemming = args.stemming
+
+    # Call main function with parsed arguments
+    main(args.directory, args.range)
 
 
