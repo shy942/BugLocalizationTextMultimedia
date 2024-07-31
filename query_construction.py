@@ -28,6 +28,7 @@ def preprocess_text(text):
 
     # remove urls and the markdown link
     text = regex.sub(r'\!\[.*?\]\(https?://\S+?\)', '', text)
+    text = regex.sub(r'https?://\S+|www\.\S+', '', text)
     
     # split camelCase and snake_case while keeping acronyms
     text = regex.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
