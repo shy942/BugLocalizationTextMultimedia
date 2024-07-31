@@ -18,24 +18,29 @@ def read_file(file_path, encoding='utf-8'):
 
 def preprocess_text(text):
 
-    # remove urls
-    text = regex.sub(r'https?://\S+|www\.\S+', '', text)
+    # remove urls and the markdown link
+    text = regex.sub(r'\!\[.*?\]\(https?://\S+?\)', '', text)
     
     # split camelCase and snake_case while keeping acronyms
     text = regex.sub(r'([a-z0-9])([A-Z])', r'\1 \2', text)
     text = regex.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', text)
     text = text.replace('_', ' ')
     
-    # split into words and remove stopwords
+    # convert to lowercase
+    text = text.lower()
+    
+    # remove stopwords
     words = text.split()
-    words = [word for word in words if word.lower() not in global_stopwords]
+    words = [word for word in words if word not in global_stopwords]
     text = ' '.join(words)
     
     # remove punctuation, numbers
     text = regex.sub(r"[\s]+|[^\w\s]|[\d]+", " ", text)
     
-    # split into words and remove stopwords
-    return ' '.join(text.split()).lower()
+    # remove stop words and words with fewer than 3 characters
+    words = text.split()
+    words = [word for word in words if word not in global_stopwords and len(word) >= 3]
+    return ' '.join(words)
 
 
 def preprocess_bug_report(bug_report_path, bug_report):
