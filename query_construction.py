@@ -35,23 +35,30 @@ def preprocess_text(text):
     text = regex.sub(r'([A-Z]+)([A-Z][a-z])', r'\1 \2', text)
     text = text.replace('_', ' ')
     
-    # convert to lowercase and split
+    # convert to lowercase and split for list comprehensions
     words = text.lower().split()
+    
+    # remove stopwords 
+    words = [word for word in words if word not in global_stopwords]
+    
+    # remove whitespace, punctuation, numbers
+    text = ' '.join(words)
+    text = regex.sub(r"[\s]+|[^\w\s]|[\d]+", " ", text)
+    words = text.split()
+    
+    # remove stopwords again to catch any that were connected to punctuation
+    words = [word for word in words if word not in global_stopwords]
     
     # perform optional stemming
     if global_use_stemming:
         words = [stemmer.stem(word) for word in words]
+        
+        # remove any words that became a stop word after stemming
+        words = [word for word in words if word not in global_stopwords]
     
-    # remove stopwords
-    words = [word for word in words if word not in global_stopwords]
-    text = ' '.join(words)
+    # remove words with fewer than 3 characters
+    words = [word for word in words if len(word) >= 3]
     
-    # remove punctuation, numbers
-    text = regex.sub(r"[\s]+|[^\w\s]|[\d]+", " ", text)
-    
-    # remove stop words and words with fewer than 3 characters
-    words = text.split()
-    words = [word for word in words if word not in global_stopwords and len(word) >= 3]
     return ' '.join(words)
 
 
