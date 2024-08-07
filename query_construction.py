@@ -21,7 +21,7 @@ def read_file(file_path, encoding='utf-8'):
             return file.read()
 
 
-def preprocess_text(text):
+def preprocess_text(text, global_stopwords=global_stopwords):
 
     # initialize stemmer if needed
     stemmer = PorterStemmer() if global_use_stemming else None
@@ -108,12 +108,12 @@ def preprocess_project(project_path):
 def load_stopwords(file_path):
     global global_stopwords
     with open(file_path, 'r') as file:
-        global_stopwords = set(word.strip() for word in file)
+        return set(word.strip() for word in file)
 
 
 def main(projects_root, range_str=None):
 
-    load_stopwords("stop_words_english.txt")
+    global_stop_words = load_stopwords("stop_words_english.txt")
 
     # process projects in given range
     if range_str:
