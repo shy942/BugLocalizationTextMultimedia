@@ -8,9 +8,6 @@ from org.apache.lucene.store import FSDirectory
 from org.apache.lucene.document import Document, StringField, TextField, Field
 from query_construction import preprocess_text, load_stopwords, read_file
 
-global_stopwords = set()
-global_use_stemming = False
-
 
 # index preprocessed source documents using apache lucene
 def index_documents(index_dir, documents):
@@ -31,10 +28,10 @@ def index_documents(index_dir, documents):
 
 
 # perform natural language preprocessing on each document
-def preprocess_documents(documents):
+def preprocess_documents(documents, stopwords, use_stemming):
     preprocessed_docs = []
     for filename, content in documents:
-        preprocessed_content = preprocess_text(content, global_stopwords)
+        preprocessed_content = preprocess_text(content, stopwords, use_stemming)
         preprocessed_docs.append((filename, preprocessed_content))
     return preprocessed_docs
 
@@ -50,12 +47,12 @@ def collect_source_documents(directory):
     return source_documents
 
 
-def main(source_path, index_path):
-    global global_stopwords
-    global_stopwords = load_stopwords("stop_words_english.txt")
+def main(source_path, index_path, use_stemming):
+
+    stopwords = load_stopwords("stop_words_english.txt")
 
     source_documents = collect_source_documents(source_path)
-    preprocessed_documents = preprocess_documents(source_documents)
+    preprocessed_documents = preprocess_documents(source_documents, stopwords, use_stemming)
     index_documents(index_path, preprocessed_documents)
 
 
@@ -66,7 +63,5 @@ if __name__ == "__main__":
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
-    global_use_stemming = args.stemming
-    main(args.project_path, args.index_path)
-    
+    main(args.project_path, args.index_path, args.stemming)
 

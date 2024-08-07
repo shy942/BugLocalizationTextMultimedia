@@ -7,10 +7,6 @@ from nltk import download
 download('punkt')
 
 
-global_stopwords = set()
-global_use_stemming = False
-
-
 def read_file(file_path, encoding='utf-8'):
     try:
         with open(file_path, 'r', encoding=encoding) as file:
@@ -21,10 +17,10 @@ def read_file(file_path, encoding='utf-8'):
             return file.read()
 
 
-def preprocess_text(text, global_stopwords=global_stopwords):
+def preprocess_text(text, stopwords, use_stemming):
 
     # initialize stemmer if needed
-    stemmer = PorterStemmer() if global_use_stemming else None
+    stemmer = PorterStemmer() if use_stemming else None
 
     # remove urls and the markdown link
     text = regex.sub(r'\!\[.*?\]\(https?://\S+?\)', '', text)
@@ -39,7 +35,7 @@ def preprocess_text(text, global_stopwords=global_stopwords):
     words = text.lower().split()
     
     # remove stopwords 
-    words = [word for word in words if word not in global_stopwords]
+    words = [word for word in words if word not in stopwords]
     
     # remove whitespace, punctuation, numbers
     text = ' '.join(words)
@@ -47,14 +43,14 @@ def preprocess_text(text, global_stopwords=global_stopwords):
     words = text.split()
     
     # remove stopwords again to catch any that were connected to punctuation
-    words = [word for word in words if word not in global_stopwords]
+    words = [word for word in words if word not in stopwords]
     
     # perform optional stemming
-    if global_use_stemming:
+    if use_stemming:
         words = [stemmer.stem(word) for word in words]
         
         # remove any words that became a stop word after stemming
-        words = [word for word in words if word not in global_stopwords]
+        words = [word for word in words if word not in stopwords]
     
     # remove words with fewer than 3 characters
     words = [word for word in words if len(word) >= 3]
@@ -62,7 +58,7 @@ def preprocess_text(text, global_stopwords=global_stopwords):
     return ' '.join(words)
 
 
-def preprocess_bug_report(bug_report_path, bug_report):
+def preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming):
     print(f"Processing bug report {bug_report}")
     
     # gather bug report title and description
@@ -81,8 +77,8 @@ def preprocess_bug_report(bug_report_path, bug_report):
             images_info += file_content + "\n"
     
     # preprocessing the bug report text
-    baseline_query = preprocess_text(title + " " + description)
-    extended_query = baseline_query + " " + preprocess_text(images_info)
+    baseline_query = preprocess_text(title + " " + description, stopwords, use_stemming)
+    extended_query = baseline_query + " " + preprocess_text(images_info, stopwords, use_stemming)
     
     # save baseline query to file
     baseline_file_path = os.path.join(bug_report_path, f'{bug_report}_baseline_query.txt')
@@ -96,24 +92,23 @@ def preprocess_bug_report(bug_report_path, bug_report):
 
 
 # loop through all bug reports in a project and perform language preprocessing
-def preprocess_project(project_path):
+def preprocess_project(project_path, stopwords, use_stemming):
     bug_reports = [name for name in os.listdir(project_path) if name.isdigit()]
     bug_reports.sort(key=int)
     for bug_report in bug_reports:
     	bug_report_path = os.path.join(project_path, bug_report)
-    	preprocess_bug_report(bug_report_path, bug_report)
+    	preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming)
 
 
-# read the stopwords and store them globally
+# read the stopwords
 def load_stopwords(file_path):
-    global global_stopwords
     with open(file_path, 'r') as file:
         return set(word.strip() for word in file)
 
 
-def main(projects_root, range_str=None):
+def main(projects_root, use_stemming, range_str=None):
 
-    global_stop_words = load_stopwords("stop_words_english.txt")
+    stopwords = load_stopwords("stop_words_english.txt")
 
     # process projects in given range
     if range_str:
@@ -127,7 +122,7 @@ def main(projects_root, range_str=None):
             project_path = os.path.join(projects_root, str(project))
             
             if os.path.exists(project_path) and os.path.isdir(project_path):
-                preprocess_project(project_path)
+                preprocess_project(project_path, stopwords, use_stemming)
     
     # process all projects
     else:
@@ -135,7 +130,7 @@ def main(projects_root, range_str=None):
         projects.sort(key=int)
         for project in projects:
             project_path = os.path.join(projects_root, project)
-            preprocess_project(project_path)
+            preprocess_project(project_path, stopwords, use_stemming)
 
 
 if __name__ == "__main__":
@@ -145,9 +140,8 @@ if __name__ == "__main__":
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
-    global_use_stemming = args.stemming
 
     # Call main function with parsed arguments
-    main(args.directory, args.range)
+    main(args.directory, args.stemming, args.range)
 
 
