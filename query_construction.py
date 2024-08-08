@@ -6,6 +6,8 @@ from nltk.stem import PorterStemmer
 from nltk import download
 download('punkt')
 
+store_queries = ""
+
 
 def read_file(file_path, encoding='utf-8'):
     try:
@@ -81,12 +83,12 @@ def preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming):
     extended_query = baseline_query + " " + preprocess_text(images_info, stopwords, use_stemming)
     
     # save baseline query to file
-    baseline_file_path = os.path.join(bug_report_path, f'{bug_report}_baseline_query.txt')
+    baseline_file_path = os.path.join(store_queries, f'{bug_report}_baseline_query.txt')
     with open(baseline_file_path, 'w') as file:
         file.write(baseline_query)
     
     # save extended query to file
-    extended_file_path = os.path.join(bug_report_path, f'{bug_report}_extended_query.txt')
+    extended_file_path = os.path.join(store_queries, f'{bug_report}_extended_query.txt')
     with open(extended_file_path, 'w') as file:
         file.write(extended_query)
 
@@ -135,13 +137,15 @@ def main(projects_root, use_stemming, range_str=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text preprocesssing")
-    parser.add_argument("directory", type=str, help="The directory to process")
+    parser.add_argument("process_directory", type=str, help="The directory to process")
+    parser.add_argument("store_directory", type=str, help="The directory to store output")
     parser.add_argument("--range", type=str, help="Optional range in the format 'start:end'", default=None)
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
+    store_queries = args.store_directory
 
     # Call main function with parsed arguments
-    main(args.directory, args.stemming, args.range)
+    main(args.process_directory, args.stemming, args.range)
 
 

@@ -22,7 +22,7 @@ def index_documents(index_dir, documents):
         doc.add(StringField("filename", filename, Field.Store.YES))
         doc.add(TextField("content", content, Field.Store.YES))
         writer.addDocument(doc)
-        print("Added", filename)
+        print(filename, "added to index")
     
     writer.close()
 
@@ -39,11 +39,15 @@ def preprocess_documents(documents, stopwords, use_stemming):
 # collect all source documents from a software project
 def collect_source_documents(directory):
     source_documents = []
+    
     for root, dirs, files in os.walk(directory):
+        dirs[:] = [d for d in dirs if not d.startswith('.')]
+    
         for file in files:
             if not file.startswith('.'):
                 file_path = os.path.join(root, file)
                 source_documents.append((file, read_file(file_path)))
+                
     return source_documents
 
 
