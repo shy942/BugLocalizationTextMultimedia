@@ -2,11 +2,11 @@ import argparse
 import sys
 import os
 import regex
+import ast
 from nltk.stem import PorterStemmer
 from nltk import download
 download('punkt')
 
-store_queries = ""
 
 
 def read_file(file_path, encoding='utf-8'):
@@ -60,8 +60,7 @@ def preprocess_text(text, stopwords, use_stemming):
     return ' '.join(words)
 
 
-def preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming):
-    print(f"Processing bug report {bug_report}")
+def preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, use_stemming):
     
     # gather bug report title and description
     title_path = os.path.join(bug_report_path, 'title.txt')
@@ -82,24 +81,19 @@ def preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming):
     baseline_query = preprocess_text(title + " " + description, stopwords, use_stemming)
     extended_query = baseline_query + " " + preprocess_text(images_info, stopwords, use_stemming)
     
+    os.makedirs(store_path, exist_ok=True)
+    
     # save baseline query to file
-    baseline_file_path = os.path.join(store_queries, f'{bug_report}_baseline_query.txt')
+    baseline_file_path = os.path.join(store_path, f'{bug_report}_baseline_query.txt')
     with open(baseline_file_path, 'w') as file:
         file.write(baseline_query)
     
     # save extended query to file
-    extended_file_path = os.path.join(store_queries, f'{bug_report}_extended_query.txt')
+    extended_file_path = os.path.join(store_path, f'{bug_report}_extended_query.txt')
     with open(extended_file_path, 'w') as file:
         file.write(extended_query)
-
-
-# loop through all bug reports in a project and perform language preprocessing
-def preprocess_project(project_path, stopwords, use_stemming):
-    bug_reports = [name for name in os.listdir(project_path) if name.isdigit()]
-    bug_reports.sort(key=int)
-    for bug_report in bug_reports:
-    	bug_report_path = os.path.join(project_path, bug_report)
-    	preprocess_bug_report(bug_report_path, bug_report, stopwords, use_stemming)
+        
+    print(f"Stored queries for bug report {bug_report} in {store_path}")
 
 
 # read the stopwords
@@ -108,44 +102,34 @@ def load_stopwords(file_path):
         return set(word.strip() for word in file)
 
 
-def main(projects_root, use_stemming, range_str=None):
+def main(projects_root, store_root, use_stemming):
 
     stopwords = load_stopwords("stop_words_english.txt")
 
-    # process projects in given range
-    if range_str:
-        try:
-            start, end = map(int, range_str.split(':'))
-        except ValueError:
-            print("Error: Range must be in the format 'start:end' where both start and end are integers.")
-            sys.exit(1)
-        
-        for project in range(start, end + 1):
-            project_path = os.path.join(projects_root, str(project))
-            
-            if os.path.exists(project_path) and os.path.isdir(project_path):
-                preprocess_project(project_path, stopwords, use_stemming)
+    projects = [name for name in os.listdir(projects_root) if name.isdigit()]
+    projects.sort(key=int)
     
-    # process all projects
-    else:
-        projects = [name for name in os.listdir(projects_root) if name.isdigit()]
-        projects.sort(key=int)
-        for project in projects:
-            project_path = os.path.join(projects_root, project)
-            preprocess_project(project_path, stopwords, use_stemming)
+    for project in projects:
+        project_path = os.path.join(projects_root, project)
+        
+        bug_reports = [name for name in os.listdir(project_path) if name.isdigit()]
+        bug_reports.sort(key=int)
+    
+        for bug_report in bug_reports:
+            bug_report_path = os.path.join(project_path, bug_report)
+            store_path = os.path.join(store_root, project)
+            preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, use_stemming)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text preprocesssing")
-    parser.add_argument("process_directory", type=str, help="The directory to process")
-    parser.add_argument("store_directory", type=str, help="The directory to store output")
-    parser.add_argument("--range", type=str, help="Optional range in the format 'start:end'", default=None)
+    parser.add_argument("process_directory", type=str, help="The directory with projects")
+    parser.add_argument("store_directory", type=str, help="The directory to store output query files")
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
-    store_queries = args.store_directory
 
     # Call main function with parsed arguments
-    main(args.process_directory, args.stemming, args.range)
+    main(args.process_directory, args.store_directory, args.stemming)
 
 

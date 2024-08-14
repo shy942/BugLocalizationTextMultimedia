@@ -1,5 +1,6 @@
 import os
 import argparse
+import shutil
 import lucene
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
@@ -11,6 +12,10 @@ from query_construction import preprocess_text, load_stopwords, read_file
 
 # index preprocessed source documents using apache lucene
 def index_documents(index_dir, documents):
+
+    if os.path.exists(index_dir):
+        shutil.rmtree(index_dir)
+
     lucene.initVM()
     index_path = Paths.get(index_dir)
     store = FSDirectory.open(index_path)
@@ -39,14 +44,16 @@ def preprocess_documents(documents, stopwords, use_stemming):
 # collect all source documents from a software project
 def collect_source_documents(directory):
     source_documents = []
+    base_directory = os.path.basename(os.path.normpath(directory))
     
     for root, dirs, files in os.walk(directory):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
-    
+        
         for file in files:
             if not file.startswith('.'):
                 file_path = os.path.join(root, file)
-                source_documents.append((file, read_file(file_path)))
+                relative_path = os.path.relpath(file_path, os.path.join(directory, ".."))
+                source_documents.append((relative_path, read_file(file_path)))
                 
     return source_documents
 
@@ -62,10 +69,10 @@ def main(source_path, index_path, use_stemming):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Index source documents of a software project using PyLucene.")
-    parser.add_argument('project_path', type=str, help='Path to the software project directory')
-    parser.add_argument('index_path', type=str, help='Path to the index directory')
+    parser.add_argument('project_source_code_path', type=str, help='Path to the software project directory')
+    parser.add_argument('index_storage_path', type=str, help='Path to the index directory')
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
-    main(args.project_path, args.index_path, args.stemming)
+    main(args.project_source_code_path, args.index_storage_path, args.stemming)
 

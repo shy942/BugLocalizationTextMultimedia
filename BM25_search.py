@@ -10,6 +10,27 @@ from org.apache.lucene.search.similarities import BM25Similarity
 from org.apache.lucene.store import FSDirectory
 
 
+def save_search_results(search_results, project, store_folder):
+
+    if not os.path.exists(store_folder):
+        os.makedirs(store_folder)
+    
+    output_file = os.path.join(store_folder, f"{project}_search_results.txt")
+    
+    with open(output_file, 'w') as f:
+    
+        sorted_titles = sorted(search_results.keys())
+        
+        for title in sorted_titles:
+            bug_id, query_type, discard = title.split('_', 2)
+            f.write(f"{bug_id},{query_type}\n")
+            
+            for result in search_results[title]:
+                filename = result['filename']
+                score = result['score']
+                f.write(f"{filename},{score:.4f}\n")
+
+
 def search_index(queries, index_folder):
 
     lucene.initVM()
@@ -24,18 +45,17 @@ def search_index(queries, index_folder):
     results = {}
 
     for query_title, query_str in queries.items():
-        print(f"Processing query {query_title}")
         
         query = QueryParser("content", analyzer).parse(query_str)
-        hits = searcher.search(query, 3).scoreDocs
+        hits = searcher.search(query, 10).scoreDocs
 
         result_list = []
         for hit in hits:
             doc = searcher.doc(hit.doc)
             result_list.append({
                 'doc_id': hit.doc,
-                'filename': doc.get("filename"),  # Retrieve the filename
-                'content': doc.get("content"),    # Retrieve the content
+                'filename': doc.get("filename"),
+                'content': doc.get("content"),
                 'score': hit.score
             })
 
@@ -61,31 +81,30 @@ def retrieve_queries(query_folder):
     return queries
 
 
-def main(query_folder, index_folder):
+def main(query_root, index_root, store_folder):
 
-    queries = retrieve_queries(query_folder)
-    search_results = search_index(queries, index_folder)
-    
-    # temporary print to see search results
-    for title, result_list in search_results.items():
-        print(f"\nResults for query titled: '{title}'")
-        print("=" * 50)
-        for idx, result in enumerate(result_list):
-            print(f"Result #{idx + 1}:")
-            print(f"Document ID: {result['doc_id']}")
-            print(f"Filename   : {result['filename']}")
-            print(f"Score      : {result['score']:.4f}")
-            print("-" * 50)
+    query_subdirs = set(os.listdir(query_root))
+    index_subdirs = set(os.listdir(index_root))
+    common_subdirs = list(query_subdirs.intersection(index_subdirs))
+
+    for project in common_subdirs:
+        query_folder = os.path.join(query_root, project)
+        index_folder = os.path.join(index_root, project)
+        
+        queries = retrieve_queries(query_folder)
+        search_results = search_index(queries, index_folder)
+        save_search_results(search_results, project, store_folder)
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Search documents using BM25 in PyLucene.")
-    parser.add_argument("query_folder", help="Path to the folder containing query files")
-    parser.add_argument("index_folder", help="Path to the folder containing the indexed documents")
+    parser.add_argument("query_folders", help="Path to the folder containing folders of query files")
+    parser.add_argument("index_folders", help="Path to the folder containing folders of indexed documents")
+    parser.add_argument("store_results", help="Path to the folder where result txts are saved")
 
     args = parser.parse_args()
 
-    main(args.query_folder, args.index_folder)
+    main(args.query_folders, args.index_folders, args.store_results)
 
 
