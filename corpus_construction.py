@@ -16,7 +16,6 @@ def index_documents(index_dir, documents):
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
 
-    lucene.initVM()
     index_path = Paths.get(index_dir)
     store = FSDirectory.open(index_path)
     config = IndexWriterConfig(StandardAnalyzer())
@@ -27,7 +26,6 @@ def index_documents(index_dir, documents):
         doc.add(StringField("filename", filename, Field.Store.YES))
         doc.add(TextField("content", content, Field.Store.YES))
         writer.addDocument(doc)
-        print(filename, "added to index")
     
     writer.close()
 
@@ -58,21 +56,30 @@ def collect_source_documents(directory):
     return source_documents
 
 
-def main(source_path, index_path, use_stemming):
+def main(source_root, index_root, use_stemming):
 
     stopwords = load_stopwords("stop_words_english.txt")
+    lucene.initVM()
 
-    source_documents = collect_source_documents(source_path)
-    preprocessed_documents = preprocess_documents(source_documents, stopwords, use_stemming)
-    index_documents(index_path, preprocessed_documents)
+    for project in os.listdir(source_root):
+        source_path = os.path.join(source_root, project, project)
+        project_name = next(dir_name for dir_name in os.listdir(source_path) if dir_name != "Corpus")
+        project_source_path = os.path.join(source_path, project_name)
+
+        source_documents = collect_source_documents(project_source_path)
+        preprocessed_documents = preprocess_documents(source_documents, stopwords, use_stemming)
+        
+        index_path = os.path.join(index_root, list(project)[-1])
+        index_documents(index_path, preprocessed_documents)
+        print(f"Indexed {project}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Index source documents of a software project using PyLucene.")
-    parser.add_argument('project_source_code_path', type=str, help='Path to the software project directory')
+    parser.add_argument('project_source_codes_path', type=str, help='Path to the folder containing all software projects')
     parser.add_argument('index_storage_path', type=str, help='Path to the index directory')
     parser.add_argument("--stemming", action="store_true", help="Enable stemming if set")
 
     args = parser.parse_args()
-    main(args.project_source_code_path, args.index_storage_path, args.stemming)
+    main(args.project_source_codes_path, args.index_storage_path, args.stemming)
 

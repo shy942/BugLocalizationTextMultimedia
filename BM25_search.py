@@ -32,8 +32,6 @@ def save_search_results(search_results, project, store_folder):
 
 
 def search_index(queries, index_folder):
-
-    lucene.initVM()
     
     # Open the index directory
     index_dir = FSDirectory.open(Paths.get(index_folder))
@@ -82,12 +80,10 @@ def retrieve_queries(query_folder):
 
 
 def main(query_root, index_root, store_folder):
+    
+    lucene.initVM()
 
-    query_subdirs = set(os.listdir(query_root))
-    index_subdirs = set(os.listdir(index_root))
-    common_subdirs = list(query_subdirs.intersection(index_subdirs))
-
-    for project in common_subdirs:
+    for project in os.listdir(index_root):
         query_folder = os.path.join(query_root, project)
         index_folder = os.path.join(index_root, project)
         
