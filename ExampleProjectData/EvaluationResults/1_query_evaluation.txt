@@ -1,8 +1,8 @@
 Project 1:
 
-Total number of groundtruth files: 0
+Total number of groundtruth files: 57
 Total number of bugs: 65
-Total amount of groundtruth files not found in source code: 0
+Total amount of groundtruth files not found in source code: 27
 Total number of Bug reports where all groundtruth files do not exist: 5
 Bug reports where all groundtruth files do not exist: ['1213', '2593', '2594', '2922', '4582']
 Total number of bug reports where some groundtruth files were missing: 16

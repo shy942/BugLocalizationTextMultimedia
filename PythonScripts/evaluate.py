@@ -41,7 +41,6 @@ def compute_evaluation(groundtruth_data, search_data):
         query_name, query_type = query
         if query_type != 'baseline':
             continue
-        
         extended_results = search_data[(query_name, 'extended')]
         
         # gather the search results and groundtruth data for comparison against one another
@@ -74,14 +73,13 @@ def compute_evaluation(groundtruth_data, search_data):
             continue
         elif missing_truth_count > 0:
             bug_reports_affected.append(query_name)
-            
+        
         # calculate mmr
         if baseline_rank != float('inf'):
             mrr_baseline_sum += 1 / baseline_rank
-        
         if extended_rank != float('inf'):
             mrr_extended_sum += 1 / extended_rank
-            
+        
         # Calculate Average Precision (AP) for baseline and extended queries
         def calculate_average_precision(retrieved_files):
             hits = 0
@@ -141,14 +139,24 @@ def compute_evaluation(groundtruth_data, search_data):
 
 # read and format the groundtruth to a dictionary
 def parse_groundtruth(groundtruth_file, source_code_root, search_data):
+
+    # these are the only bug reports to consider
+    bug_reports = {key[0] for key in search_data.keys()}
+
+    # datasets to keep track of necessary groundtruth data
     groundtruth_data = {}
     all_groundtruth = set()
     missing_groundtruth = set()
+    
     with open(groundtruth_file, 'r') as file:
         while True:
             query_line = file.readline().strip()
+            
+            # exit if end of file
             if not query_line:
                 break
+                
+            # setup for data retrieval
             query_name, num_lines = query_line.split()
             num_lines = int(num_lines)
             groundtruth_entries = set()
@@ -156,17 +164,26 @@ def parse_groundtruth(groundtruth_file, source_code_root, search_data):
             
             for _ in range(num_lines):
                 line = file.readline().strip()
+                
+                # skip groundtruth data corresponding to non-existant bug reports
+                if not query_name in bug_reports:
+                    continue
+                    
+                # format each path for comparison to search results
                 parts = line.split('.')
                 if len(parts) > 1:
                     line = '/'.join(parts[:-1]) + '.' + parts[-1]
                 
+                # track whether the path actually exists
                 full_path = os.path.join(source_code_root, line)
-
+                all_groundtruth.add(full_path)
                 if os.path.exists(full_path):
                     groundtruth_entries.add(line)
                 else:
                     non_existent_count += 1
-                
+                    missing_groundtruth.add(full_path)
+                    
+            # store the formatted data in a dictionary
             groundtruth_data[query_name] = (groundtruth_entries, non_existent_count)
         
     return groundtruth_data, len(all_groundtruth), len(missing_groundtruth)
@@ -175,20 +192,26 @@ def parse_groundtruth(groundtruth_file, source_code_root, search_data):
 # read and format the stored query search results to a dictionary
 def parse_search_results(search_result_file):
     search_data = {}
+    
     with open(search_result_file, 'r') as file:
         while True:
             query_line = file.readline().strip()
             if not query_line:
                 break
+            
             query_name, query_type = query_line.split(',')
             search_results = []
+            
+            # formatting each path for comparison to groundtruth
             for _ in range(10):
                 line = file.readline().strip()
                 parts = line.split('/')
                 if len(parts) > 1:
                     line = '/'.join(parts[1:])
                 search_results.append(line)
+                
             search_data[(query_name, query_type)] = search_results
+            
     return search_data
 
 
@@ -197,8 +220,12 @@ def main (source_root, results_folder, evaluation_folder):
     # iterate over each project that has results computed for it
     for result in os.listdir(results_folder):
     
+        # preliminary setup, ensure everything exists
         project = list(result)[0]
         source_path = os.path.join(source_root, f"Project{project}", f"Project{project}")
+        if not os.path.exists(source_path):
+            print(f"Couldn't find source code and is skipping project {project}")
+            continue
         
         # find the path to the source code
         source_corpus = None
@@ -210,7 +237,8 @@ def main (source_root, results_folder, evaluation_folder):
                 source_code_root = os.path.join(source_path, file)
         if not source_corpus or not source_code_root:
             print(f"Error with groundtruth location:{source_corpus} or source code location:{source_code_root}")
-            exit(1)
+            print(f"Couldn't process and is skipping project {project}")
+            continue
         
         # find the path to the groundtruth file
         groundtruth_file = None
@@ -219,8 +247,9 @@ def main (source_root, results_folder, evaluation_folder):
                 groundtruth_file = file
                 break
         if not groundtruth_file:
-            print("Error no ground truth file found")
-            exit(1)
+            print("Error: no ground truth file found")
+            print(f"Couldn't process and is skipping project {project}")
+            continue
         
         # gather the search results data
         search_result_path = os.path.join(results_folder, result)

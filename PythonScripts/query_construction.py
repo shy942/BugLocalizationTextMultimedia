@@ -122,12 +122,14 @@ def main(projects_root, store_root, use_stemming):
     projects = [name for name in os.listdir(projects_root) if name.isdigit()]
     projects.sort(key=int)
     
+    # iterate through projects
     for project in projects:
         project_path = os.path.join(projects_root, project)
         
         bug_reports = [name for name in os.listdir(project_path) if name.isdigit()]
         bug_reports.sort(key=int)
-    
+        
+        # iterate through bug reports
         for bug_report in bug_reports:
             bug_report_path = os.path.join(project_path, bug_report)
             store_path = os.path.join(store_root, project)

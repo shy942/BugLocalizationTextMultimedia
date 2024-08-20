@@ -24,15 +24,18 @@ project_indexes_root = "../ExampleProjectData/ProjectIndexes"
 
 # index preprocessed source documents using apache lucene
 def index_documents(index_dir, documents):
-
+    
+    # wipe the directory if an old index exists there
     if os.path.exists(index_dir):
         shutil.rmtree(index_dir)
 
+    # OOP initializations
     index_path = Paths.get(index_dir)
     store = FSDirectory.open(index_path)
     config = IndexWriterConfig(StandardAnalyzer())
     writer = IndexWriter(store, config)
     
+    # index all documents
     for filename, content in documents:
         doc = Document()
         doc.add(StringField("filename", filename, Field.Store.YES))
@@ -73,14 +76,19 @@ def main(source_root, index_root, use_stemming):
     stopwords = load_stopwords("stop_words_english.txt")
     lucene.initVM()
 
+    # iterate over each project
     for project in os.listdir(source_root):
+        
+        # find the source code path
         source_path = os.path.join(source_root, project, project)
         project_name = next(dir_name for dir_name in os.listdir(source_path) if dir_name != "Corpus")
         project_source_path = os.path.join(source_path, project_name)
-
+        
+        # gather the source docs and preprocess them
         source_documents = collect_source_documents(project_source_path)
         preprocessed_documents = preprocess_documents(source_documents, stopwords, use_stemming)
         
+        # index the documents
         index_path = os.path.join(index_root, list(project)[-1])
         index_documents(index_path, preprocessed_documents)
         print(f"Indexed {project}")

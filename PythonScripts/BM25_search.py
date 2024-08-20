@@ -25,13 +25,13 @@ search_results_root = "../ExampleProjectData/SearchResults"
 # write the results to a file
 def save_search_results(search_results, project, store_folder):
 
+    # determine where the results are being saved
     if not os.path.exists(store_folder):
         os.makedirs(store_folder)
-    
     output_file = os.path.join(store_folder, f"{project}_search_results.txt")
     
+    # iterate through each query and save all of their results
     with open(output_file, 'w') as f:
-    
         sorted_titles = sorted(search_results.keys())
         
         for title in sorted_titles:
@@ -56,7 +56,8 @@ def search_index(queries, index_folder):
     analyzer = StandardAnalyzer()
 
     results = {}
-
+    
+    # perform the search
     for query_title, query_str in queries.items():
         
         query = QueryParser("content", analyzer).parse(query_str)
@@ -80,6 +81,7 @@ def search_index(queries, index_folder):
     return results
 
 
+# gathers all queries for a project using a dictionary with filename as key
 def retrieve_queries(query_folder):
     queries = {}
     
@@ -98,10 +100,20 @@ def main(query_root, index_root, store_folder):
     
     lucene.initVM()
 
+    # iterate through all projects that have an index 
     for project in os.listdir(index_root):
+        
+        # find the specific project folders
         query_folder = os.path.join(query_root, project)
         index_folder = os.path.join(index_root, project)
         
+        # ensure there is a respective project folder with queries
+        if not os.path.exists(query_folder):
+            print(f"Error: cannot find query folder {query_folder}")
+            print(f"Couldn't process and is skipping project {project}")
+            continue
+        
+        # get queries, compare to index, and save the results
         queries = retrieve_queries(query_folder)
         search_results = search_index(queries, index_folder)
         save_search_results(search_results, project, store_folder)
