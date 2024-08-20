@@ -1,12 +1,12 @@
 Project 1:
 
-Total number of groundtruth files: 9511
+Total number of groundtruth files: 0
 Total number of bugs: 65
-Total amount of groundtruth files not found in source code: 53
+Total amount of groundtruth files not found in source code: 0
 Total number of Bug reports where all groundtruth files do not exist: 5
 Bug reports where all groundtruth files do not exist: ['1213', '2593', '2594', '2922', '4582']
-Total number of bug reports where some groundtruth files were missing: 21
-Bug reports where some groundtruth files were missing: ['1213', '1259', '1295', '1703', '1739', '1839', '1840', '1859', '1865', '1869', '1987', '2234', '2288', '2430', '2593', '2594', '2922', '3291', '4562', '4582', '4650']
+Total number of bug reports where some groundtruth files were missing: 16
+Bug reports where some groundtruth files were missing: ['1259', '1295', '1703', '1739', '1839', '1840', '1859', '1865', '1869', '1987', '2234', '2288', '2430', '3291', '4562', '4650']
 Total number of considered bugs: 60
 
 QE Improved Count: 9
@@ -22,6 +22,12 @@ Hit@K for extended queries:
 Hit@1: 53.33%
 Hit@5: 78.33%
 Hit@10: 93.33%
+
+MRR baseline queries: 0.6579232804232803
+MRR extended queries: 0.6567724867724868
+
+MAP baseline queries: 56.89400982615268
+MAP extended queries: 57.886205593348464
 
 Individual Results:
 1213, 'Baseline', None

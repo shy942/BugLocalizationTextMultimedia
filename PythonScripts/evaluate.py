@@ -21,16 +21,20 @@ def compute_evaluation(groundtruth_data, search_data):
     same_count = 0
     worse_count = 0
     
-    missing_groundtruth_count = 0
-    total_groundtruth_count = 0
     bug_reports_affected = []
     bug_reports_missing_groundtruth = []
     
     bug_report_ranks = []
+    total_queries = 0
     
     hit_at_k_baseline = {1: 0, 5: 0, 10: 0}
     hit_at_k_extended = {1: 0, 5: 0, 10: 0}
-    total_queries = 0
+    
+    mrr_baseline_sum = 0
+    mrr_extended_sum = 0
+    
+    map_baseline_sum = 0
+    map_extended_sum = 0
     
     # iterate over each baseline query, gathering both the baseline and extended queries
     for query, search_results in search_data.items():
@@ -40,15 +44,10 @@ def compute_evaluation(groundtruth_data, search_data):
         
         extended_results = search_data[(query_name, 'extended')]
         
-        # gather the search data and groundtruth data for comparison against one another
+        # gather the search results and groundtruth data for comparison against one another
         groundtruth_set, missing_truth_count = groundtruth_data.get(query_name, (set(), 0))
         baseline_files = [result.split(',')[0] for result in search_results]
         extended_files = [result.split(',')[0] for result in extended_results]
-        
-        # identify missing groundtruth files
-        missing_groundtruth_count += missing_truth_count
-        if missing_truth_count > 0:
-            bug_reports_affected.append(query_name)
         
         # compute baseline and extended rank
         baseline_rank = next((i + 1 for i, result in enumerate(baseline_files) if result in groundtruth_set), float('inf'))
@@ -73,6 +72,32 @@ def compute_evaluation(groundtruth_data, search_data):
         if not groundtruth_set:
             bug_reports_missing_groundtruth.append(query_name)
             continue
+        elif missing_truth_count > 0:
+            bug_reports_affected.append(query_name)
+            
+        # calculate mmr
+        if baseline_rank != float('inf'):
+            mrr_baseline_sum += 1 / baseline_rank
+        
+        if extended_rank != float('inf'):
+            mrr_extended_sum += 1 / extended_rank
+            
+        # Calculate Average Precision (AP) for baseline and extended queries
+        def calculate_average_precision(retrieved_files):
+            hits = 0
+            precision_sum = 0
+            for i, file in enumerate(retrieved_files):
+                if file in groundtruth_set:
+                    hits += 1
+                    precision = hits / (i + 1)
+                    precision_sum += precision
+            return precision_sum / hits if hits > 0 else 0
+        
+        ap_baseline = calculate_average_precision(baseline_files)
+        ap_extended = calculate_average_precision(extended_files)
+        
+        map_baseline_sum += ap_baseline
+        map_extended_sum += ap_extended
         
         # Calculate Hit@K for baseline
         for k in hit_at_k_baseline:
@@ -90,24 +115,35 @@ def compute_evaluation(groundtruth_data, search_data):
     hit_at_k_baseline_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_baseline.items()}
     hit_at_k_extended_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_extended.items()}
     
+    # Calculate final MRR by dividing the sum by the total number of queries
+    mrr_baseline = mrr_baseline_sum / total_queries if total_queries > 0 else 0
+    mrr_extended = mrr_extended_sum / total_queries if total_queries > 0 else 0
+    
+    # Calculate final MAP by dividing the sum by the total number of queries
+    map_baseline = (map_baseline_sum / total_queries) * 100 if total_queries > 0 else 0
+    map_extended = (map_extended_sum / total_queries) * 100 if total_queries > 0 else 0
+    
     return {
         'improvement_count': improvement_count,
         'same_count': same_count,
         'worse_count': worse_count,
-        'total_groundtruth_count': total_groundtruth_count,
-        'missing_groundtruth_count': missing_groundtruth_count,
         'bug_reports_affected': bug_reports_affected,
         'bug_reports_missing_groundtruth': bug_reports_missing_groundtruth,
         'hit_at_k_baseline_percent': hit_at_k_baseline_percent,
         'hit_at_k_extended_percent': hit_at_k_extended_percent,
-        'bug_report_ranks': bug_report_ranks
+        'bug_report_ranks': bug_report_ranks,
+        'mrr_baseline': mrr_baseline,
+        'mrr_extended': mrr_extended,
+        'map_baseline': map_baseline,
+        'map_extended': map_extended
     }
 
 
 # read and format the groundtruth to a dictionary
-def parse_groundtruth(groundtruth_file, source_code_root):
+def parse_groundtruth(groundtruth_file, source_code_root, search_data):
     groundtruth_data = {}
-    total_groundtruth_count = 0
+    all_groundtruth = set()
+    missing_groundtruth = set()
     with open(groundtruth_file, 'r') as file:
         while True:
             query_line = file.readline().strip()
@@ -125,7 +161,7 @@ def parse_groundtruth(groundtruth_file, source_code_root):
                     line = '/'.join(parts[:-1]) + '.' + parts[-1]
                 
                 full_path = os.path.join(source_code_root, line)
-                total_groundtruth_count += 1
+
                 if os.path.exists(full_path):
                     groundtruth_entries.add(line)
                 else:
@@ -133,7 +169,7 @@ def parse_groundtruth(groundtruth_file, source_code_root):
                 
             groundtruth_data[query_name] = (groundtruth_entries, non_existent_count)
         
-    return groundtruth_data, total_groundtruth_count
+    return groundtruth_data, len(all_groundtruth), len(missing_groundtruth)
 
 
 # read and format the stored query search results to a dictionary
@@ -186,13 +222,13 @@ def main (source_root, results_folder, evaluation_folder):
             print("Error no ground truth file found")
             exit(1)
         
-        # gather the groundtruth data
-        groundtruth_path = os.path.join(source_corpus, groundtruth_file)
-        groundtruth_data, total_groundtruth_count = parse_groundtruth(groundtruth_path, source_code_root)
-        
         # gather the search results data
         search_result_path = os.path.join(results_folder, result)
         search_data = parse_search_results(search_result_path)
+        
+        # gather the groundtruth data
+        groundtruth_path = os.path.join(source_corpus, groundtruth_file)
+        groundtruth_data, total_groundtruth_count, missing_groundtruth_count = parse_groundtruth(groundtruth_path, source_code_root, search_data)
         
         # compute all query evaluators
         data = compute_evaluation(groundtruth_data, search_data)
@@ -207,7 +243,7 @@ def main (source_root, results_folder, evaluation_folder):
             file.write(f"Project {project}:\n\n")
             file.write(f"Total number of groundtruth files: {total_groundtruth_count}\n")
             file.write(f"Total number of bugs: {bug_report_count}\n")
-            file.write(f"Total amount of groundtruth files not found in source code: {data['missing_groundtruth_count']}\n")
+            file.write(f"Total amount of groundtruth files not found in source code: {missing_groundtruth_count}\n")
             
             file.write(f"Total number of Bug reports where all groundtruth files do not exist: {bug_reports_missing_count}\n")
             file.write(f"Bug reports where all groundtruth files do not exist: {data['bug_reports_missing_groundtruth']}\n")
@@ -228,6 +264,12 @@ def main (source_root, results_folder, evaluation_folder):
             file.write(f"\nHit@K for extended queries:\n")
             for k, percentage in data['hit_at_k_extended_percent'].items():
                 file.write(f"Hit@{k}: {percentage:.2f}%\n")
+                
+            file.write(f"\nMRR baseline queries: {data['mrr_baseline']}\n")
+            file.write(f"MRR extended queries: {data['mrr_extended']}\n")
+            
+            file.write(f"\nMAP baseline queries: {data['map_baseline']}\n")
+            file.write(f"MAP extended queries: {data['map_extended']}\n")
         
             file.write("\nIndividual Results:\n")
             for rank_info in data['bug_report_ranks']:
