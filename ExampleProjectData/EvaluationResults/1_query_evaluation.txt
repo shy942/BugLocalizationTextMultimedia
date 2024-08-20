@@ -1,11 +1,9 @@
-Project 1:
-
-total amount of groundtruth files not found in source code: 53
-bug reports where all groundtruth files do not exist: ['1213', '2593', '2594', '2922', '4582']
-bug reports where some groundtruth files were missing: ['1259', '1295', '1703', '1739', '1839', '1840', '1859', '1865', '1869', '1987', '2234', '2288', '2430', '3291', '4562', '4650']
+Total amount of groundtruth files not found in source code: 53
+Bug reports where all groundtruth files do not exist: ['1213', '2593', '2594', '2922', '4582']
+Bug reports where some groundtruth files were missing: ['1213', '1259', '1295', '1703', '1739', '1839', '1840', '1859', '1865', '1869', '1987', '2234', '2288', '2430', '2593', '2594', '2922', '3291', '4562', '4582', '4650']
 
 QE Improved Count: 9
-QE Identical Count: 45
+QE Identical Count: 50
 QE Worse Count: 6
 
 Hit@K for baseline queries:
@@ -17,3 +15,135 @@ Hit@K for extended queries:
 Hit@1: 53.33%
 Hit@5: 78.33%
 Hit@10: 93.33%
+
+Query Ranks:
+1213, 'Baseline', None
+1213, 'Extended', None
+1252, 'Baseline', 2
+1252, 'Extended', 2
+1259, 'Baseline', 2
+1259, 'Extended', 1
+1266, 'Baseline', 6
+1266, 'Extended', 3
+1295, 'Baseline', 2
+1295, 'Extended', 4
+1337, 'Baseline', 5
+1337, 'Extended', 4
+1387, 'Baseline', 6
+1387, 'Extended', 6
+1444, 'Baseline', 1
+1444, 'Extended', 1
+1621, 'Baseline', 9
+1621, 'Extended', 9
+1646, 'Baseline', 3
+1646, 'Extended', 4
+1703, 'Baseline', 6
+1703, 'Extended', 6
+1739, 'Baseline', 1
+1739, 'Extended', 2
+1783, 'Baseline', 3
+1783, 'Extended', 1
+1839, 'Baseline', 7
+1839, 'Extended', 7
+1840, 'Baseline', None
+1840, 'Extended', None
+1859, 'Baseline', 5
+1859, 'Extended', 4
+1865, 'Baseline', 4
+1865, 'Extended', 6
+1869, 'Baseline', 3
+1869, 'Extended', 2
+1987, 'Baseline', 7
+1987, 'Extended', 6
+2233, 'Baseline', 1
+2233, 'Extended', 1
+2234, 'Baseline', 1
+2234, 'Extended', 1
+2288, 'Baseline', 1
+2288, 'Extended', 1
+2309, 'Baseline', 2
+2309, 'Extended', 2
+2332, 'Baseline', None
+2332, 'Extended', None
+2367, 'Baseline', 2
+2367, 'Extended', 2
+2403, 'Baseline', 1
+2403, 'Extended', 1
+2430, 'Baseline', 2
+2430, 'Extended', 2
+2485, 'Baseline', 1
+2485, 'Extended', 1
+2557, 'Baseline', 6
+2557, 'Extended', 6
+2593, 'Baseline', None
+2593, 'Extended', None
+2594, 'Baseline', None
+2594, 'Extended', None
+2601, 'Baseline', 1
+2601, 'Extended', 1
+2634, 'Baseline', 1
+2634, 'Extended', 1
+2683, 'Baseline', 1
+2683, 'Extended', 1
+2868, 'Baseline', 1
+2868, 'Extended', 1
+2922, 'Baseline', None
+2922, 'Extended', None
+2931, 'Baseline', 7
+2931, 'Extended', 7
+2955, 'Baseline', 1
+2955, 'Extended', 1
+3007, 'Baseline', 1
+3007, 'Extended', 1
+3024, 'Baseline', 1
+3024, 'Extended', 1
+3037, 'Baseline', 1
+3037, 'Extended', 2
+3291, 'Baseline', 1
+3291, 'Extended', 1
+3293, 'Baseline', 2
+3293, 'Extended', 2
+3366, 'Baseline', 1
+3366, 'Extended', 1
+3368, 'Baseline', 7
+3368, 'Extended', 5
+3517, 'Baseline', 1
+3517, 'Extended', 1
+3605, 'Baseline', 1
+3605, 'Extended', 1
+3687, 'Baseline', 7
+3687, 'Extended', 7
+3715, 'Baseline', 1
+3715, 'Extended', 1
+3825, 'Baseline', 1
+3825, 'Extended', 1
+3868, 'Baseline', 1
+3868, 'Extended', 1
+3973, 'Baseline', 1
+3973, 'Extended', 1
+4004, 'Baseline', 1
+4004, 'Extended', 1
+4053, 'Baseline', 1
+4053, 'Extended', 1
+4063, 'Baseline', 1
+4063, 'Extended', 1
+4080, 'Baseline', 1
+4080, 'Extended', 1
+4128, 'Baseline', 1
+4128, 'Extended', 1
+4145, 'Baseline', 2
+4145, 'Extended', 2
+4176, 'Baseline', 1
+4176, 'Extended', 1
+4281, 'Baseline', 3
+4281, 'Extended', 1
+4366, 'Baseline', 1
+4366, 'Extended', 1
+4413, 'Baseline', None
+4413, 'Extended', None
+4562, 'Baseline', 1
+4562, 'Extended', 1
+4582, 'Baseline', None
+4582, 'Extended', None
+4650, 'Baseline', 1
+4650, 'Extended', None

@@ -1,5 +1,4 @@
 import os
-import argparse
 
 
 # modify global variables to specify folder paths
@@ -26,6 +25,8 @@ def compute_evaluation(groundtruth_data, search_data):
     bug_reports_affected = []
     bug_reports_missing_groundtruth = []
     
+    bug_report_ranks = []
+    
     hit_at_k_baseline = {1: 0, 5: 0, 10: 0}
     hit_at_k_extended = {1: 0, 5: 0, 10: 0}
     total_queries = 0
@@ -33,51 +34,72 @@ def compute_evaluation(groundtruth_data, search_data):
     # iterate over each baseline query, gathering both the baseline and extended queries
     for query, search_results in search_data.items():
         query_name, query_type = query
-        if query_type == 'baseline':
-            extended_results = search_data[(query_name, 'extended')]
-            
-            # gather the search data and groundtruth data for comparison against one another
-            groundtruth_set, missing_truth_count = groundtruth_data.get(query_name, (set(), 0))
-            baseline_files = [result.split(',')[0] for result in search_results]
-            extended_files = [result.split(',')[0] for result in extended_results]
-            
-            # identify missing groundtruth files
-            missing_groundtruth_count += missing_truth_count
-            if not groundtruth_set:
-                bug_reports_missing_groundtruth.append(query_name)
-            else:
-                if missing_truth_count > 0:
-                    bug_reports_affected.append(query_name)
-                    
-                # compute baseline and extended rank
-                baseline_rank = next((i + 1 for i, result in enumerate(baseline_files) if result in groundtruth_set), float('inf'))
-                extended_rank = next((i + 1 for i, result in enumerate(extended_files) if result in groundtruth_set), float('inf'))
-            
-                # store whether rank improved with the extended query
-                if extended_rank < baseline_rank:
-                    improvement_count += 1
-                elif extended_rank == baseline_rank:
-                    same_count += 1
-                else:
-                    worse_count += 1
-            
-                # Calculate Hit@K for baseline
-                for k in hit_at_k_baseline:
-                    if any(result in groundtruth_set for result in baseline_files[:k]):
-                        hit_at_k_baseline[k] += 1
-            
-                # Calculate Hit@K for extended
-                for k in hit_at_k_extended:
-                    if any(result in groundtruth_set for result in extended_files[:k]):
-                        hit_at_k_extended[k] += 1
-            
-                total_queries += 1
-
+        if query_type != 'baseline':
+            continue
+        
+        extended_results = search_data[(query_name, 'extended')]
+        
+        # gather the search data and groundtruth data for comparison against one another
+        groundtruth_set, missing_truth_count = groundtruth_data.get(query_name, (set(), 0))
+        baseline_files = [result.split(',')[0] for result in search_results]
+        extended_files = [result.split(',')[0] for result in extended_results]
+        
+        # identify missing groundtruth files
+        missing_groundtruth_count += missing_truth_count
+        if missing_truth_count > 0:
+            bug_reports_affected.append(query_name)
+        
+        # compute baseline and extended rank
+        baseline_rank = next((i + 1 for i, result in enumerate(baseline_files) if result in groundtruth_set), float('inf'))
+        extended_rank = next((i + 1 for i, result in enumerate(extended_files) if result in groundtruth_set), float('inf'))
+        
+        # store individual ranks
+        bug_report_ranks.append({
+            'query_name': query_name,
+            'baseline_rank': baseline_rank if baseline_rank != float('inf') else None,
+            'extended_rank': extended_rank if extended_rank != float('inf') else None
+        })
+        
+        # store whether rank improved with the extended query
+        if extended_rank < baseline_rank:
+            improvement_count += 1
+        elif extended_rank == baseline_rank:
+            same_count += 1
+        else:
+            worse_count += 1
+        
+        # prevent matrices calculations if no groundtruth existed
+        if not groundtruth_set:
+            bug_reports_missing_groundtruth.append(query_name)
+            continue
+        
+        # Calculate Hit@K for baseline
+        for k in hit_at_k_baseline:
+            if any(result in groundtruth_set for result in baseline_files[:k]):
+                hit_at_k_baseline[k] += 1
+        
+        # Calculate Hit@K for extended
+        for k in hit_at_k_extended:
+            if any(result in groundtruth_set for result in extended_files[:k]):
+                hit_at_k_extended[k] += 1
+        
+        total_queries += 1
+    
     # compute k percentages
     hit_at_k_baseline_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_baseline.items()}
     hit_at_k_extended_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_extended.items()}
     
-    return [improvement_count, same_count, worse_count], [bug_reports_missing_groundtruth, missing_groundtruth_count, bug_reports_affected], [hit_at_k_baseline_percent, hit_at_k_extended_percent]
+    return {
+        'improvement_count': improvement_count,
+        'same_count': same_count,
+        'worse_count': worse_count,
+        'missing_groundtruth_count': missing_groundtruth_count,
+        'bug_reports_affected': bug_reports_affected,
+        'bug_reports_missing_groundtruth': bug_reports_missing_groundtruth,
+        'hit_at_k_baseline_percent': hit_at_k_baseline_percent,
+        'hit_at_k_extended_percent': hit_at_k_extended_percent,
+        'bug_report_ranks': bug_report_ranks
+    }
 
 
 # read and format the groundtruth to a dictionary
@@ -170,26 +192,30 @@ def main (source_root, results_folder, evaluation_folder):
         search_data = parse_search_results(search_result_path)
         
         # compute all query evaluators
-        QE, missing_groundtruth, hit_at_k = compute_evaluation(groundtruth_data, search_data)
+        data = compute_evaluation(groundtruth_data, search_data)
         
         # save search results
         storage_path = os.path.join(evaluation_folder, f"{project}_query_evaluation.txt")
-        with open(storage_path, 'w') as file:
-            file.write(f"Project {project}:\n")
-            file.write(f"\ntotal amount of groundtruth files not found in source code: {missing_groundtruth[1]}\n")
-            file.write(f"bug reports where all groundtruth files do not exist: {missing_groundtruth[0]}\n")
-            file.write(f"bug reports where some groundtruth files were missing: {missing_groundtruth[2]}\n")
-            file.write(f"\nQE Improved Count: {QE[0]}\n")
-            file.write(f"QE Identical Count: {QE[1]}\n")
-            file.write(f"QE Worse Count: {QE[2]}\n")
+    with open(storage_path, 'w') as file:
+        file.write(f"Total amount of groundtruth files not found in source code: {data['missing_groundtruth_count']}\n")
+        file.write(f"Bug reports where all groundtruth files do not exist: {data['bug_reports_missing_groundtruth']}\n")
+        file.write(f"Bug reports where some groundtruth files were missing: {data['bug_reports_affected']}\n")
+        file.write(f"\nQE Improved Count: {data['improvement_count']}\n")
+        file.write(f"QE Identical Count: {data['same_count']}\n")
+        file.write(f"QE Worse Count: {data['worse_count']}\n")
+    
+        file.write(f"\nHit@K for baseline queries:\n")
+        for k, percentage in data['hit_at_k_baseline_percent'].items():
+            file.write(f"Hit@{k}: {percentage:.2f}%\n")
         
-            file.write(f"\nHit@K for baseline queries:\n")
-            for k, percentage in hit_at_k[0].items():
-                file.write(f"Hit@{k}: {percentage:.2f}%\n")
-            
-            file.write(f"\nHit@K for extended queries:\n")
-            for k, percentage in hit_at_k[1].items():
-                file.write(f"Hit@{k}: {percentage:.2f}%\n")
+        file.write(f"\nHit@K for extended queries:\n")
+        for k, percentage in data['hit_at_k_extended_percent'].items():
+            file.write(f"Hit@{k}: {percentage:.2f}%\n")
+        
+        file.write("\nQuery Ranks:\n")
+        for rank_info in data['bug_report_ranks']:
+            file.write(f"{rank_info['query_name']}, 'Baseline', {rank_info['baseline_rank']}\n")
+            file.write(f"{rank_info['query_name']}, 'Extended', {rank_info['extended_rank']}\n")
                 
         print(f"stored evaluation for project {project} to {storage_path}")
 
