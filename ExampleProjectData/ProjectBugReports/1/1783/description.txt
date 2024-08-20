@@ -1,0 +1,38 @@
+**Version/Branch of Dear ImGui:** v1.53 WIP
+
+**My Issue/Question:** Made a nice interface with ImGui and I love it! But I came across something; When a listbox is inside of a child that is inside of a column and you drag the window off screen it triggers a break point and then crashes. Decided to look into it a little more. When I remove ListBoxHeader and ListBoxFooter it doesn't crash. I then tried removing Child and leaving ListBox inside the column and it also didn't crash. Next I tried removing the columns and leaving ListBox inside the child and it didn't crash. Afterwards tried removing the Listbox and replacing it with a checkbox and it didn't crash.  So I'm assuming its when you have the Listbox inside the child inside of a column. It only crashes though when the child is fully out of the screen or when you make the size of the window small until the child is not visible.
+
+```
+ImGui::Begin("Test Window", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders);
+	{
+		ImGui::Columns(2, NULL, false);
+		{
+			{
+				ImGui::BeginChild("Test Child", ImVec2(0, 0), true, 0);
+				{
+					ImGui::ListBoxHeader("Test Header");
+					ImGui::ListBoxFooter();
+					ImGui::EndChild();
+				}
+			}
+			ImGui::NextColumn();
+			{
+		
+			}
+		}
+		ImGui::End();
+	}
+```
+
+Edit: After more testing, it seems like it only crashes when only the child in the first column isn't visible,  other childs in different columns do not crash when they're not visible.
+
+Where the breakpoint occurs:
+![bvftupr](https://user-images.githubusercontent.com/30432546/39402189-8bbeaf46-4b0d-11e8-8949-5de5194db35d.png)
+Moving backwards to where the window is:
+![8ugdcbk](https://user-images.githubusercontent.com/30432546/39402198-a1666c4e-4b0d-11e8-8d53-c093018a29f0.png)
+![hrnaowx](https://user-images.githubusercontent.com/30432546/39402200-a343ed2a-4b0d-11e8-8edc-c6ebd71a9c51.png)
+![fno6f7r](https://user-images.githubusercontent.com/30432546/39402201-a504de4e-4b0d-11e8-8f6c-21617a867cd8.png)
+![f9msuel](https://user-images.githubusercontent.com/30432546/39402208-c1835762-4b0d-11e8-8d9f-1623ec51b423.png)
+
+_All info is found from the callstack in VisualStudio's Debugger_
+

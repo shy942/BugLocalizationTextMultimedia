@@ -1,0 +1,6 @@
+Current
+Original
+R:186     G:218     B: 85     A: 0
+H: 53     S:156     V:218     A: 0
+
+#BADA5500

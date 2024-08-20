@@ -1,0 +1,1 @@
+LabelText resizes incorrectly with multiline text

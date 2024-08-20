@@ -1,0 +1,36 @@
+Version: Dear ImGui 1.83 WIP (18209)
+Branch: docking
+
+Hi, the "MenuItem" function currently has an "selected" parameter:
+ `bool ImGui::MenuItem(const char* label, const char* shortcut, bool selected, bool enabled)`
+
+However, this parameter will be ignored if it's in a horizontal layout. The reason for this is because [it will always pass "false" to the Selectable()](https://github.com/ocornut/imgui/blob/master/imgui_widgets.cpp#L6889). 
+
+Using the following code:
+```
+if (ImGui::BeginMenuBar()) {
+  if (ImGui::MenuItem("Move", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Move, inLevelViewport)) {
+    Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Move;
+  }
+  
+  if (ImGui::MenuItem("Rotate", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Rotate, inLevelViewport)) {
+    Editor::Gui::Globals::SelectedGizmoMovementType = Editor::Gui::GizmoMovementType::Rotate;
+  }
+  
+  if (ImGui::MenuItem( Scale", nullptr, Globals::SelectedGizmoMovementType == GizmoMovementType::Scale, inLevelViewport)) {
+    Editor::Gui::Globals::SelectedGizmoMovementType = GizmoMovementType::Scale;
+  }
+```
+Will result in:
+![image](https://user-images.githubusercontent.com/49276951/117856407-dd6c6980-b28b-11eb-9fd6-7c7d439d83e1.png)
+
+Instead of the results I want to achieve (This was done by passing the "selected" argument to Selectable() instead.)
+![image](https://user-images.githubusercontent.com/49276951/117856269-b1e97f00-b28b-11eb-9bbb-fba143ddd7ae.png)
+
+My question is if this is how it's supposed to work? Should I use something else instead? I would also like to point out the following comment in the MenuItem() code as it may be useful or explain things.
+```
+// Mimic the exact layout spacing of BeginMenu() to allow MenuItem() inside a menu bar, which is a little misleading but may be useful
+// Note that in this situation we render neither the shortcut neither the selected tick mark
+```
+
+Regards

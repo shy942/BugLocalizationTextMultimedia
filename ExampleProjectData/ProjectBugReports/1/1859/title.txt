@@ -1,0 +1,1 @@
+Font Texture allocates too much memory for Unicode-supported (Chinese) fonts.

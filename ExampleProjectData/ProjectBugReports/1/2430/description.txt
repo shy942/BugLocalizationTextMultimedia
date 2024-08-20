@@ -1,0 +1,19 @@
+I just started looking at ImGui for use with Freeglut, and I am sporadically getting crashes at startup on the (unmodified) provided example (i.e. it crashes often, but not always).
+
+The crash, when it happens, seems to always happen in imgui.cpp : L3386
+
+IM_ASSERT((g.IO.DeltaTime > 0.0f || g.FrameCount == 0)              && "Need a positive DeltaTime!");
+
+disabling the assert everything seems to run fine
+
+![imgui-crash](https://user-images.githubusercontent.com/6178097/54521831-0e7ed700-496c-11e9-88ba-ed2ad767cddf.jpg)
+.
+
+I am on:
+
+- ToT master / 1.69
+- Windows 10 / VS 2017
+- freeglut 3.0.0
+
+Other than that, the library seems awesome!
+

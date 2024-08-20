@@ -1,0 +1,32 @@
+**Version/Branch of Dear ImGui:**
+
+Version: v1.80
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_dx9.cpp
+Compiler: MSVC 2017
+Operating System: Windows 10
+
+**My Issue/Question:**
+
+bool ImGui::CollapsingHeader(const char* label, bool* p_open, ImGuiTreeNodeFlags flags)
+When I am using this version of CollapsingHeader with false o_open parameter the CollapsingHeader is not visible.
+
+In older version this was an open parameter. In this version it seems like it means visible?
+
+**Screenshots/Video**
+
+![imgui_collapsing_header](https://user-images.githubusercontent.com/4198194/104424360-9097b100-557f-11eb-8d49-11a07d98b0a1.png)
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+```
+//   if (ImGui::CollapsingHeader("Help"))
+//   I have replaced this line in imgui_demo.cpp with the lines below and the "Help" CollapsingHeader disappeared. 
+     bool open = false;
+     if (ImGui::CollapsingHeader("Help", &open))
+
+
+```
+

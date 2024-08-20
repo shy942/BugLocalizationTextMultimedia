@@ -1,0 +1,94 @@
+Hi there,
+
+I am using GLFW3 +imgui ( off of master branch ) + imgui_impl_glfw_gl3.h to create GUI in my app.
+
+I load my image in the GPU and pass the textureID to ImGui::Image. After this, I was hoping to see my image but instead I see the font image.
+
+Here is the my code: 
+```
+
+#include <WindowApp.h>
+#include <imgui.h>
+#include <imgui_impl_glfw_gl3.h>
+
+void 
+WindowApp::initialize()
+{
+    // initialize GLFW
+    if (glfwInit())
+        std::cout << "GLFW initialized successfully!" << '\n';
+
+    // Set all the required options for GLFW
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_SAMPLES, m_multiSample);
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    glfwWindowHint(GLFW_RED_BITS, 8);
+    glfwWindowHint(GLFW_GREEN_BITS, 8);
+    glfwWindowHint(GLFW_BLUE_BITS, 8);
+    glfwWindowHint(GLFW_ALPHA_BITS, 8);
+
+    // create glfw window and its openGL context
+    m_window = glfwCreateWindow(m_width, m_height, m_windowTitle.c_str(), nullptr, nullptr);
+    if (m_window)
+    {
+        std::cout << "Window created successfully!" << '\n';
+        glfwMakeContextCurrent(m_window);
+    }
+
+    // glad
+    gladLoadGL();
+
+    glfwSwapInterval(1);
+
+    ImGui::CreateContext();
+    ImGui_ImplGlfwGL3_Init(m_window, false);
+
+    // load my load image
+    glGenTextures(1, &m_id);
+    glBindTexture(GL_TEXTURE_2D, m_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    m_image = std::make_shared<Image>("someImage.png");
+    assert( m_image );
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_image ->width(), m_image ->height(), 0, GL_BGR, GL_UNSIGNED_BYTE, m_image ->data());
+}
+
+void 
+WindowApp::drawLoop()
+{
+    while (!glfwWindowShouldClose(m_window))
+    {
+        glfwPollEvents();
+ 
+        ImGui_ImplGlfwGL3_NewFrame();
+
+        ImGui::Begin("Debug Window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+
+        float w = static_cast<float>(m_image ->width());
+        float h = static_cast<float>(m_image ->height());
+        ImGui::Image(reinterpret_cast<ImTextureID*>(&m_id), ImVec2(w, h));
+
+        ImGui::End();
+
+        ImGui::Render();
+        ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+        
+        glfwSwapBuffers(m_window);
+    }
+
+    ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
+    glfwTerminate();
+}
+
+```
+And here is what I get:
+![result](https://user-images.githubusercontent.com/283793/40581682-be971450-612c-11e8-9923-85874b4dee51.jpg)
+
+Could you tell me if this is this a bug in "imgui_impl_glfw_gl3.h"? or am I doing something wrong?
+
+Best Regards,
+
+H

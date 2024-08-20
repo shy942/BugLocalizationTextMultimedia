@@ -1,0 +1,25 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.78
+Branch: master
+
+**My Issue/Question:**
+
+Currently, when using input field in ColorEdit4() to type/paste hexadecimal color and the number will be too short (i.e. will not include alpha value), tha alpha value will default to 0. In my opinion defaulting to FF would be better in case someone pastes a color without alpha channel to make this color visible.
+
+One possible solution could be to replace line https://github.com/ocornut/imgui/blob/688e06490e82545d85b6f2adf58ee7a9d39ba6b2/imgui_widgets.cpp#L4807
+with
+```
+i[0] = i[1] = i[2] = 0;
+i[3] = 255;
+```
+
+**Screenshots/Video**
+
+Before loosing focus:
+![image](https://user-images.githubusercontent.com/5932485/112610649-389de600-8e1d-11eb-8700-7ce4386ec139.png)
+After loosing focus:
+![image](https://user-images.githubusercontent.com/5932485/112610771-58cda500-8e1d-11eb-8a39-34462192df38.png)
+
+**Standalone, minimal, complete and verifiable example:**
+N/A

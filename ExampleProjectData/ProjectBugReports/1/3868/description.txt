@@ -1,0 +1,115 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.82 (WIP latest)
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_dx9.cpp
+Compiler: any
+Operating System: any
+
+**My Issue/Question:**
+
+In imgui_draw.cpp, GetTexDataAsRGBA32 will return texture data if has been built.
+```c++
+void    ImFontAtlas::GetTexDataAsAlpha8(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel)
+{
+    // Build atlas on demand
+    if (TexPixelsAlpha8 == NULL)
+    {
+        if (ConfigData.empty())
+            AddFontDefault();
+        Build();
+    }
+
+    *out_pixels = TexPixelsAlpha8;
+    if (out_width) *out_width = TexWidth;
+    if (out_height) *out_height = TexHeight;
+    if (out_bytes_per_pixel) *out_bytes_per_pixel = 1;
+}
+
+void    ImFontAtlas::GetTexDataAsRGBA32(unsigned char** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel)
+{
+    // Convert to RGBA32 format on demand
+    // Although it is likely to be the most commonly used format, our font rendering is 1 channel / 8 bpp
+    if (!TexPixelsRGBA32)
+    {
+        unsigned char* pixels = NULL;
+        GetTexDataAsAlpha8(&pixels, NULL, NULL);
+        if (pixels)
+        {
+            TexPixelsRGBA32 = (unsigned int*)IM_ALLOC((size_t)TexWidth * (size_t)TexHeight * 4);
+            const unsigned char* src = pixels;
+            unsigned int* dst = TexPixelsRGBA32;
+            for (int n = TexWidth * TexHeight; n > 0; n--)
+                *dst++ = IM_COL32(255, 255, 255, (unsigned int)(*src++));
+        }
+    }
+
+    *out_pixels = (unsigned char*)TexPixelsRGBA32;
+    if (out_width) *out_width = TexWidth;
+    if (out_height) *out_height = TexHeight;
+    if (out_bytes_per_pixel) *out_bytes_per_pixel = 4;
+}
+```
+That means if we don't call Clear manually, the following code will causes the R and B channels to swap multiple times (for example, if we change window size, device will lose and we have to recreate all objects):
+```c++
+static bool ImGui_ImplDX9_CreateFontsTexture()
+{
+    // Build texture atlas
+    ImGuiIO& io = ImGui::GetIO();
+    unsigned char* pixels;
+    int width, height, bytes_per_pixel;
+    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
+    
+    // Convert RGBA32 to BGRA32 as the earlier is not well supported by DX9 devices
+#ifndef IMGUI_USE_BGRA_PACKED_COLOR
+    if (io.Fonts->TexPixelsUseColors)
+        for (ImU32* p = (ImU32*)pixels, *p_end = p + width * height; p < p_end; p++)
+            *p = IMGUI_COL_TO_DX9_ARGB(*p);
+#endif
+```
+
+**Screenshots/Video**
+
+first open dx9 example:
+![1](https://user-images.githubusercontent.com/57629614/109768645-21137900-7c34-11eb-8d4d-2de4fbb813dc.png)
+adjust window size:
+![2](https://user-images.githubusercontent.com/57629614/109768677-2b357780-7c34-11eb-9084-da295007a7cb.png)
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+
+test code from #3844 
+```c++
+#define IMGUI_USE_WCHAR32
+#define IMGUI_ENABLE_FREETYPE
+//#define IMGUI_USE_BGRA_PACKED_COLOR
+```
+main.cpp
+```c++
+...
+
+#include "imgui_freetype.h"
+
+...
+
+    ImFontGlyphRangesBuilder builder;
+    builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+    builder.AddText(u8"?");
+    ImVector<ImWchar> ranges;
+    builder.BuildRanges(&ranges);
+    ImFontConfig cfg;
+    cfg.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_LoadColor;
+    ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\SEGUIEMJ.ttf", 16.0f, &cfg, ranges.Data);
+```
+
+**How to solve this problem?**
+
+_How are you again, DX9 Backend, your BGRA32 color format cause so many problems : (_
+There are several possibilities:
+1. add a field to record the texture data format (once and for all solutions)
+2. call Clear() everytime before create texture object (This is the simplest solution, but the performance penalty is unacceptable)
+3. add a global bool flag in dx9 backend to record whether a conversion has occurred (might cause other problem and may not be compatible with dynamic font atlas in the future)
+
+Thanks!

@@ -1,0 +1,11 @@
+Hi,
+
+I'm trying to layout a window so that there is a top part that doesn't scroll, and the bottom part is a list that can be scrolled : 
+![screenshot from 2017-09-27 01-42-53](https://user-images.githubusercontent.com/434333/30890485-36ac2b2c-a325-11e7-9968-eac55301bf32.png)
+
+This can be implemented by using BeginChild()/BeginChildFrame() for the scrolling part.
+The slightly annoying problem with this is that previously the entire window would be reactive to click-and-drag (so you can move it by clicking anywhere), but now only the part outside of BeginChild/EndChild has that ability.
+
+Is there a way around this?
+
+Thanks!

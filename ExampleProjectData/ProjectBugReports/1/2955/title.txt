@@ -1,0 +1,1 @@
+ImGuiColorEditFlags_NoInputs flag hide inputs but keep space

@@ -1,0 +1,1 @@
+The image displays an excerpt from a graphical user interface (GUI) that appears to be related to color selection or manipulation. On the left side, there are two window tabs labeled “Test Window” and “Another Window,” with “Another Window” being highlighted. Below these tabs, there is a line of text showing a performance measurement: “Application average 16.941 ms.”

@@ -1,0 +1,56 @@
+**Version/Branch of Dear ImGui:**
+
+```
+Dear ImGui 1.83 WIP (18204)
+--------------------------------
+sizeof(size_t): 8, sizeof(ImDrawIdx): 2, sizeof(ImDrawVert): 20
+define: __cplusplus=201402
+define: __APPLE__
+define: __GNUC__=4
+define: __clang_version__=12.0.0 (clang-1200.0.32.29)
+--------------------------------
+io.BackendPlatformName: imgui_impl_osx
+io.BackendRendererName: imgui_impl_metal
+io.ConfigFlags: 0x00000000
+io.ConfigMacOSXBehaviors
+io.ConfigInputTextCursorBlink
+io.ConfigWindowsResizeFromEdges
+io.ConfigMemoryCompactTimer = 60.0
+io.BackendFlags: 0x0000000A
+ HasMouseCursors
+ RendererHasVtxOffset
+--------------------------------
+io.Fonts: 1 fonts, Flags: 0x00000000, TexSize: 512,64
+io.DisplaySize: 1200.00,720.00
+io.DisplayFramebufferScale: 2.00,2.00
+--------------------------------
+style.WindowPadding: 8.00,8.00
+style.WindowBorderSize: 1.00
+style.FramePadding: 4.00,3.00
+style.FrameRounding: 0.00
+style.FrameBorderSize: 0.00
+style.ItemSpacing: 8.00,4.00
+style.ItemInnerSpacing: 4.00,4.00
+```
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_osx and imgui_impl_metal
+Compiler: Apple clang version 12.0.0 (clang-1200.0.32.29)
+Operating System: macOS Big Sur 11.2.3 (20D91
+
+**My Issue/Question:**
+
+Thanks for creating IMGUI, I am having fun with it!  However I think I discovered a small bug:
+
+See screenshot below, the thickness of triangles is only around half of other shapes.  Interestingly this also happens when I draw the triangle with `AddPolyline(...)` (a polyline with 3 points in clockwise order and closed set to true) and it's not a problem with the example [screenshot on the main github page](https://raw.githubusercontent.com/wiki/ocornut/imgui/web/v167/v167-misc.png).  So it might be related to Metal rendering on the Mac. 
+
+**Screenshots/Video**
+
+<img width="492" alt="IMGUITriangleStrokeBug" src="https://user-images.githubusercontent.com/134199/115146667-bc7f7280-a057-11eb-964a-4fbb00ac244a.png">
+
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+
+Just run the examples on a Mac with the metal backend.
+

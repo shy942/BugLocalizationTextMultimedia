@@ -1,0 +1,1 @@
+Direct3D D3DRS_FOGENABLE enabled affects ImGui UI's

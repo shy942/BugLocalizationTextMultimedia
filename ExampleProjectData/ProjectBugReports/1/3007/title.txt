@@ -1,0 +1,1 @@
+SetNextWindowBgAlpha(1.0) works incorrectly

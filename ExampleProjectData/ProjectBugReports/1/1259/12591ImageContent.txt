@@ -1,0 +1,38 @@
+   2022         return ImMax(wrap_pos.x - pos.x, 1.0f);
+   2023     }
+   2024 }
+   2025 
+   2026 //-------------------------------------------------------------------------
+   2027 
+   2028 void* ImGui::MemAlloc(size_t sz)
+   2029 {
+   2030     GImGui->IO.MetricsAllocs++;
+   2031     return GImGui->IO.MemAllocFn(sz);
+   2032 }
+   2033 
+   2034 void ImGui::MemFree(void* ptr)
+   2035 {
+   2036     if (ptr) GImGui->IO.MetricsAllocs--;
+   2037     return GImGui->IO.MemFreeFn(ptr);
+   2038 }
+   2039 
+   2040 const char* ImGui::GetClipboardText()
+   2041 {
+   2042     return GImGui->IO.GetClipboardTextFn ? GImGui->IO.GetClipboardTextFn(GImGui->IO.ClipboardUserData) : "";
+   2043 }
+   2044 
+   2045 void ImGui::SetClipboardText(const char* text)
+   2046 {
+   2047     if (GImGui->IO.SetClipboardTextFn)
+   2048         GImGui->IO.SetClipboardTextFn(GImGui->IO.ClipboardUserData, text);
+   2049 }
+   2050         
+   2051 const char* ImGui::GetVersion()
+   2052 {
+   2053     return IMGUI_VERSION;
+   2054 }
+   2055 
+   2056 // Internal state access - if you want to share ImGui state between modules (e.g. DLL) or allocate it yourself
+   2057 // Note that we still point to some static data and members (such as GFontAtlas), so the state instance you end up using will point to the static data within its module
+   2058 ImGuiContext* ImGui::GetCurrentContext()
+   2059 {

@@ -1,0 +1,25 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.71 git (fc3c3de551cbc5c13443f6e25977078006275713)
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_opengl3.cpp; imgui_impl_glfw.cpp; GLEW
+Compiler: gcc 8.3.0
+Operating System: GNU/Linux
+
+**My Issue/Question:**
+
+Double clicking an input in a ColorEdit without ImGuiColorEditFlags_NoInputs (e.g. the either R, G or B integer in the demo but this seems to be an issue with drags in general) opens up a temporary input where I can enter a new value. However it does not seem to be possible to set the respective color component to that new value e.g. by pressing enter. Because `TempInputTextScalar` will *always* return false, causing value_changed in ColorEdit4 to not be set in such cases.
+
+**Screenshots/Video**
+
+![2019-05-15-222741_217x28_scrot](https://user-images.githubusercontent.com/13542760/57807116-ccea8c80-7760-11e9-82c2-ff021055c4e7.png)
+double clicking either of the values will let me type a new value, however, changes are lost on focus change/enter press, the color won't change.
+
+```
+// From the example
+ImGui::ColorEdit3("clear color", (float*)&clear_color);
+```
+

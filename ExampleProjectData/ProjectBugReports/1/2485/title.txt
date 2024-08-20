@@ -1,0 +1,1 @@
+PlotLines not handling NaN (was ImMin returns NaN if RHS is NaN)

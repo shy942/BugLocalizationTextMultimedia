@@ -1,0 +1,14 @@
+Light removed
+Spotlight created
+Light removed
+Light removed
+Spotlight created
+Light removed
+Spotlight created
+
+60.14
+16.63ms
+16.58ms
+0.04ms
+PlayerPos: 8.0 -72.0 517.0
+render_info: lights:0  mesh:125  tris:206

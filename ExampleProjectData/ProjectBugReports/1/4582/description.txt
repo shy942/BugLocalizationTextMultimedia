@@ -1,0 +1,41 @@
+Hello, I am having an issue with my gui set up. I am trying to creatin a simple window but dearimgui window is a mask for the actual game scene. 
+I am using SDL 2.0.17
+SDL2 + SDL_Renderer backend 
+Here is what is looks like
+![Screenshot from 2021-09-24 17-58-34](https://user-images.githubusercontent.com/70812929/134747829-7731a576-a42d-46c2-96af-31fa9d200949.png)
+![Screenshot from 2021-09-24 17-58-04](https://user-images.githubusercontent.com/70812929/134747835-18d93ac2-ebb5-477b-86cf-61b489fc7015.png)
+
+![Screenshot from 2021-09-24 17-58-00](https://user-images.githubusercontent.com/70812929/134747838-1d3b72d8-8002-46f2-9476-285985ec7c7a.png)
+
+Here is the code that I am using to generate the scene
+```
+
+void render(){
+
+  // start the imgui frame
+  ImGui_ImplSDLRenderer_NewFrame();
+  ImGui_ImplSDL2_NewFrame(Window);
+  ImGui::NewFrame();
+
+  ImGui::Begin("Scene");
+  ImGui::Text("Temp");
+  ImGui::End();
+  ImGui::EndFrame();
+
+  SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 0);
+  SDL_RenderClear(Renderer);
+
+  SDL_Rect o = {40,40,100,40};
+  SDL_SetRenderDrawColor(Renderer, 100, 32, 13, 255);
+  SDL_RenderFillRect(Renderer, &o);
+
+  ImGui::Render();
+  ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+
+  RenderGameState(&game); //A bunch of SDL_RenderDrawLines() 
+
+  //SDL_GL_SwapWindow(Window);
+  SDL_RenderPresent(Renderer);
+}
+```
+

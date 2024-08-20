@@ -1,0 +1,10 @@
+// Window background
+if (!(flags & ImGuiWindowFlags_NoBackground))
+{
+    ImU32 bg_col = GetColorU32(GetWindowBgColorIdxFromFlags(flags));
+    if (g.NextWindowData.Flags & ImGuiNextWindowDataFlags_HasBgAlpha)
+    {
+        float alpha = g.NextWindowData.BgAlphaVal;
+        bg_col = (bg_col & ~IM_COL32_A_MASK) | (IM_F32_TO_INT8_SAT(alpha) << IM_COL32_A_SHIFT);
+    }
+    window->DrawList->AddRectFilled(window->Pos + ImVec2(0, window->TitleBarHeight()), window->Pos

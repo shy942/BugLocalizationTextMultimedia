@@ -1,0 +1,51 @@
+SETTINGS
+
+DISPLAY
+Shadows                                     OFF   ON
+Fixed layout                                OFF   ON
+Stereo image                                OFF   ON
+                                            LEFT  RIGHT
+Interpupillary distance:
+                                -                      29.5 cm                      +
+Light Intensity:
+                                -----------------1.00---------------
+                                TOGGLE LOGO
+Main window:                    DISPLAY1 ▼
+Support window:                 DISPLAY2 ▼
+
+
+ORTHOGONAL PLANES
+Pedicle center                                OFF   ON
+Zoom:
+                                -----------------1.00---------------
+                                RESET ZOOM
+
+
+LABELS
+Enable labels in 'Visualization' and select 'Mesh' or 'Volume Heatmaps'
+                                            CHANGE STYLE
+Mode
+                                ALL      AROUND THE TOOL
+                                ONLY THE CLOSEST
+Source
+                                MASS CENTERS    MESH SURFACE
+
+
+CLIPPING
+Active tool clipping                          OFF   ON
+Shape
+                                BOX                            SPHERE FOR VOLUME
+                                PLANE
+Moveable                                    OFF   ON
+
+
+DEBUG
+[x] God mode (only for experienced users)
+[ ] Debug window
+[ ] ImGui demo window
+[ ] Calibration error
+[x] Detailed timing
+[x] Orthogonal planes
+
+                                SAVE MASKED RAW VOLUMES
+                                SAVE SEGMENTED VOLUMES

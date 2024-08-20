@@ -1,0 +1,12 @@
+I just came to the realization that there's no reason to prevent most popups from being moved.
+In `BeginPopupEx` if we just remove the `ImGuiWindowFlags_NoMove` flag, popups can be moved.
+
+Does anyone sees in their codebase, a side-effect, potential breakage or reason to not just remove this flag?
+
+Thinking of cases such as:
+![ref](https://user-images.githubusercontent.com/8225057/28490663-4137c232-6f12-11e7-8201-747a0fdba63c.PNG)
+
+The popup auto position but no reason to lock its position.
+
+When the popup is filled with menu items and auto-sized there's typically little room to grab and move them, but I don't think it is something that people would really care about. Also, because child menu are positioned by their parent, you still cannot move a child menu (which also is to be expected).
+

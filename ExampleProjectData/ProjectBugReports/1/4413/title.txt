@@ -1,0 +1,1 @@
+Linking errors in a fresh project going by the instructions in FAQ

@@ -1,0 +1,13 @@
+Hello omar,
+
+![image](https://user-images.githubusercontent.com/35402248/37957909-5fee5370-31af-11e8-941d-5b524576ef54.png)
+
+I've found about a few thousand dummy glyphs in my font atlas when loading a CJK font.
+See attached pic.
+
+Is there a quick way to detect them and prevent them included in the final font atlas?
+I would rather like a '?'/unused glyph in those dummy boxes instead :)
+
+Ty!
+
+PS: ImGui 1.60 beta

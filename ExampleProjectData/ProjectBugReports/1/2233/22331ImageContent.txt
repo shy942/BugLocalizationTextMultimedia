@@ -1,0 +1,43 @@
+ImGui Demo
+Menu Examples Help
+
+dear imgui says hello. (1.66b)
+
+Help
+Configuration
+Window options
+
+Widgets
+  Basic
+  Trees
+  Collapsing Headers
+  Bullets
+  Text
+    Colored Text
+    Word Wrapping
+    UTF-8 Text
+
+CJK text will only appears if the font was loaded with the appropriate CJK character ranges. Call io.
+Font->AddFontFromFileTTF() manually to load extra character ranges. Read misc/fonts/README.txt for details.
+
+Hiragana: ????? (kakikukeko)
+Kanjis: ??? (nihongo)
+
+                        ???                      UTF-8 input
+
+  Images
+  Combo
+  Selectables
+  Filtered Text Input
+  Multi-line Text Input
+  Plots Widgets
+  Color/Picker Widgets
+  Range Widgets
+  Data Types
+  Multi-component Widgets
+  Vertical Sliders
+  Drag and Drop
+  Querying Status (Active/Focused/Hovered etc.)
+
+Layout
+Popups & Modal windows

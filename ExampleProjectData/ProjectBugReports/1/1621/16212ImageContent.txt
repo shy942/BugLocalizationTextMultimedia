@@ -1,0 +1,13 @@
+File  Map  Windows  Help
+
+▾ FPS Graph
+                         60.00 FPS
+
+
+▾ File Access
+
+
+                         0.00 Reads
+                         0.00 Writes
+                         0.00 Accesses
+                         0.00 Total

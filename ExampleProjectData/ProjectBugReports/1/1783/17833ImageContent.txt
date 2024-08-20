@@ -1,0 +1,6 @@
+void ImGui::EndChildFrame()
+{
+    EndChild();
+    PopStyleVar(2);
+    PopStyleColor();
+}

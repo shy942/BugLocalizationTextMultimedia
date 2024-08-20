@@ -1,0 +1,31 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.82
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_win32.cpp + imgui_impl_dx11.cpp
+Compiler: MSVC19
+Operating System: Windows 10
+
+**My Issue/Question:**
+
+This is overall really, really minor. But now that I've noticed it, it does bug me a little bit.
+As the issue title suggests, the caret position in InputText widgets may end up with a non-integer value depending on character widths, causing the caret to appear blurry.
+I *think* the y-coordinate is not affected by this. At least I haven't been able to get it to be an issue on that axis. Only on the x-axis.
+
+The fix for this isn't really dramatic and Dear ImGui does seem to round coordinates in many places, so I believe it would be reasonable to have the same for the caret.
+Typing this up I realized this may even be intentional when navigating between characters. In that case I'd still think it would be nice to at least have it rounded when the caret's at the end of the text.
+
+But yeah, very minor thing. Thanks for your time here.
+
+**Screenshots/Video**
+
+![caret](https://user-images.githubusercontent.com/12502199/116167930-a3cf2680-a701-11eb-971b-4319b93458e5.png)
+
+**Standalone, minimal, complete and verifiable example:**
+
+This can be observed in the demo code with a font resulting in non-integer character widths loaded. 
+In my case I've loaded Segoe UI ("segoeui.ttf") straight from the Windows font folder at 32.0f size.
+Font loader is the default stb_truetype.

@@ -1,0 +1,21 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.84 WIP (18308)
+Branch: docking
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: All of them
+
+**My Issue/Question:**
+
+A border around a drop target is drawn outside a window. I am not sure if this is expected behavior but it looks weird to me.
+
+**Screenshots/Video**
+
+![image](https://user-images.githubusercontent.com/34756939/123827502-f7780f00-d900-11eb-9ee9-0b9f64df003a.png)
+
+**Standalone, minimal, complete and verifiable example:**
+
+`Demo -> Widgets -> Drag and Drop`
+

@@ -1,0 +1,29 @@
+Sep 24 17:58
+hamdaddy@hamdaddy:~/Workspace/shuru-karo/build
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+karo [A
+caro [A
+../imgui/imgui.cpp:7280: void ImGui::ErrorCheckNewFrameSanityChecks(): Assertion 'g.FrameCount == 0 || g.FrameCountEnded == g.FrameCount' failed.
+slingshot
+ Temp

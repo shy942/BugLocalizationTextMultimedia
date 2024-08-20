@@ -1,0 +1,1 @@
+drag behavior clamp main default max version branch dear gui version wip branch master issue question drag behavior drag widgets clamp min max case clamp min manipulate object size possibility improve behavior case screenshots video standalone minimal complete verifiable gui imgui drag float issue static float size gui drag float size size gui

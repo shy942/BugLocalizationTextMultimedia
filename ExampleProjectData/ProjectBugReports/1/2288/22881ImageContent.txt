@@ -1,0 +1,22 @@
+Dear ImGui DirectX9 Example
+
+(This is some useful text.)
+[x] Demo Window
+[ ] Another Window
+
+0.000 float
+Radius 5.140 8.143 clear color
+
+Button counter = 0
+Application average 17.524 ms/frame (57.1 FPS)
+
+Dear ImGui says hello. (1.67 WIP) 
+> Help
+> Configuration
+> Window options
+> Widgets
+> Layout
+> Popups & Modal windows
+> Columns
+> Filtering
+> Inputs, Navigation & Focus

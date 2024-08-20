@@ -1,0 +1,23 @@
+▼ Example: Custom rendering
+        Primitives             Canvas        BG/FG draw lists
+
+Gradients
+float
+All primitives                G
+B: 128                        . 256
+Button counter:
+clear color
+36
+5.90
+Application 
+6
+average .966 ms/frame (58
+12
+8
+R: 255       G: 255       B: 102       A: 255
+Size
+Thickness
+N-gon sides
+Circle segments override
+Curves segments override
+Color

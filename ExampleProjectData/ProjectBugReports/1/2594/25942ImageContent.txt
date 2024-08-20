@@ -1,0 +1,48 @@
+example_win32_opengl.exe
+Lifecycle Events ------------------------------------------
+[16772] example_win32_opengl.exe
+Dear ImGui OpenGL Example
+ ∇ Hello, world!
+ fpss;sps:fpss/spersseseeer tr.
+‘nngn:eretingewtttovt.
+{}nuer.,,,fovven.eiti.e5.50
+Dear ImGui Demo
+serp;sn:erterlone,erer,W,t)
+starerts.cp,C4’inc.
+derItter,orie,-,utW
+rameiffency,Otre
+ntr,oronog,iritrions
+eler,tereteperts‘etrorer hare.
+rersttringrrettinen
+ercorrindetets,pterer
+fste.figertserers
+tersettoeblg
+sWo64\profapi.dll'.
+sEo64\wpnotrprof.dll'.
+sWm64\umpdc.dll'.
+sWoS4\lmiltapLdll'.
+sWo5$\crypt,3s.ll'.
+sWs64\steupapt.dll'.
+sWos4\cuieee\dll'.
+sWs64\olem32.dll'.
+sWon4\oesp32.d1l'.
+SY0 5$\version.d11'.
+3\nWssroot.dll
+sWos4\mnpu.dll'.
+swoc64\endress.dll'.
+SK 5$\wreckit.dll'.
+sWon4nump.dll'.
+D1s64\inetutil.dll
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\profapi.dll'
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\powrprof.dll'
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\umpdc.dll'
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\lmiltapLdll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\crypt)3s.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\steupapt.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cuieee.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\olem32.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oesp32.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\version.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\nssroot.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\xercesd.dll'.
+example_win32_opengl.exe' (Win32): Loaded 'C:\Windows\SysWOW64\iertutil.dll'

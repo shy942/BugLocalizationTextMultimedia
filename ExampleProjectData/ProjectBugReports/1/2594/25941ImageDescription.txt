@@ -1,0 +1,1 @@
+ This image showcases a graphical application window mimicking an OpenGL example using the Dear ImGui library. The window's title bar at the top-left corner reads "Dear ImGui OpenGL Example" in white text against a black background. The application interface comprises two primary UI panels, both set against a flat grey background:   

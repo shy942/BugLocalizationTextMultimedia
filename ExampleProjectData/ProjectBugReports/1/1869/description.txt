@@ -1,0 +1,33 @@
+**Version/Branch of Dear ImGui:**
+
+About 1 week old master (948009a8)
+
+**Back-end file/Renderer/OS:**
+
+Slightly modified imgui_impl_sdl_gl3.h (changed imgui and opengl include paths)
+
+**My Issue/Question:**
+
+I want to align the texts/center the icons in this popup:
+
+![image](https://user-images.githubusercontent.com/1352934/41143859-32ef2cfc-6afb-11e8-89cd-a9e2d22ca28c.png)
+
+``` cpp
+if(ImGui::BeginPopup("Example Bug"))
+{
+  // defined somewhere else
+  // static bool enabled1 = true;
+  // static bool enabled2 = true;
+  const char* text1    = ICON_FK_ARROWS_H " New Horizontal divider";
+  const char* text2    = ICON_FK_ARROWS_V " New Vertical divider";
+
+  if(enabled1) ImGui::Selectable(text1);
+  else ImGui::Text(text1);
+
+  if(enabled2) ImGui::Selectable(text2);
+  else ImGui::Text(text2);
+  ImGui::EndPopup();
+}
+```
+
+The current workaround is to add spaces before and after the icon, to align the text, so one possible, but hacky solution would be to add a min_glyph_width to the ImFontConfig struct when loading the font. 

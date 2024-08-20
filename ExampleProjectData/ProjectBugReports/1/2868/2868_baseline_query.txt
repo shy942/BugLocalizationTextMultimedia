@@ -1,0 +1,1 @@
+add triangl draw nonuniform version branch dear gui version wip eca latest commit time issu older version branch master imgui impl cpp imgui impl win cpp compil msvc oper win issu question triangl nonuniform screenshot video standalon minim complet verifi gui test auto gui window draw list const vec gui cursor screen add triangl vec vec col gui triangl allright

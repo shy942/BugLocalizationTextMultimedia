@@ -1,0 +1,21 @@
+Version: v1.79
+Branch: master
+OS: Windows 10
+Compiler: VS2019
+---
+When i try to collapse window with ListBox in it:
+
+"An unhandled exception was thrown: read access violation.
+parent_window was nullptr."
+
+![???????????](https://user-images.githubusercontent.com/52621231/103443168-78fe2580-4c6d-11eb-928a-28da0c908f85.png)
+
+
+Shown example:
+```
+ImGui::Begin("Error test");
+ImGui::ListBoxHeader("Test");
+ImGui::Selectable("A", false);
+ImGui::ListBoxFooter();
+ImGui::End();
+```

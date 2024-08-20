@@ -1,0 +1,1 @@
+AddRect() without AntiAliasedLines missing a pixel

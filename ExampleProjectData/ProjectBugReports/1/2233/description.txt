@@ -1,0 +1,14 @@
+For some reason i am unable to print lithuanian characters (?????š??) with ImGui. At first i thought it is something with my code, but even if i run official demo i see this:
+
+![image](https://user-images.githubusercontent.com/19151258/49695834-63f75b00-fba9-11e8-9d98-d4db53345d17.png)
+
+No matter what i try - always get question marks in place of mentioned characters.
+
+Tested official imgui samples: win32 dx12, linux sdl2 opengl2, linux sdl2 opengl2, linux glfw_opengl2.
+Tested 1.66b release and latest snapshot of docking branch.
+
+In my own application i tested printing text with `ImGui::TextColored` by passing it utf-8-encoded string. I even tried with `u8"?????"` literal.
+
+I tested default font as well as google's noto fonts. I inspected my used fonts in font preview only to see that characters i am looking for indeed are supported. I do not specify any font ranges for noto fonts to include all characters.
+
+I see no white squares as mentioned in font readme so texture must properly fit fonts. At this point i am still not sure if this is my error or the issue. Is demo supposed to show proper text instead of ????? there?

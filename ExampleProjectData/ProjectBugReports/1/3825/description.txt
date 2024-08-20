@@ -1,0 +1,4 @@
+
+![image](https://user-images.githubusercontent.com/11966418/108382079-68b50080-7243-11eb-9a09-0b9d99a7cf12.png)
+
+As you see, the collapsed bar will not be pulled out from the edge if it is moved to the postion, even though the check box be selected and unselected.

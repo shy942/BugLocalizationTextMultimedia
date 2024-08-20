@@ -1,0 +1,1 @@
+Tables output borders and background beyond right-most column

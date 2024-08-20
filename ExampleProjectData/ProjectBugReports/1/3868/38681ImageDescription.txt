@@ -1,0 +1,1 @@
+The image is a screenshot of a graphical user interface of an application called "Dear ImGui DirectX9 Example." The window is divided into two sections: a smaller, prominent window labeled "Dear ImGui Style Editor" and a larger, mostly obscured window titled "Dear ImGui Demo." 

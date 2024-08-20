@@ -1,0 +1,104 @@
+It was always nagging me a bit that ImGui has a handful Xcode clang static analyzer warnings :) All in all there are 9 warnings, 5 of those are uncritical dead-store-warnings (value x is never read), and "4 potential nullptr access". Since it's only so few, and I'm not sure if and how you want to fix those I haven't done a PR, but just this ticket:
+
+First the potential nullptr accesses, three of those are fairly simple:
+
+#### imgui_widgets.cpp:6432:17: Dereference of null pointer (loaded from variable 'p_open'):
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imgui_widgets.cpp#L6427-L6434
+
+The analyzer thinks that ```*p_open = false``` can result in a nullptr access when p_open is a nullptr, since p_open is an optional parameter I'd suggest putting an if around it:
+
+```cpp
+    // Render tab label, process close button
+    const ImGuiID close_button_id = p_open ? window->GetID((void*)((intptr_t)id + 1)) : 0;
+    bool just_closed = TabItemLabelAndCloseButton(display_draw_list, bb, flags, label, id, close_button_id);
+    if (just_closed)
+    {
+        if (p_open)
+        {
+            *p_open = false;
+        }
+        TabBarCloseTab(tab_bar, tab);
+    }
+```
+
+#### imgui.cpp:4148:12: Access to field 'x' results in a dereference of a null pointer (loaded from variable 'mouse_pos')
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imgui.cpp#L4142-L4149
+
+The static analyzer thinks that the mouse_pos pointer can be a nullptr even after it is checked for NULL and reassigned to ```&GImGui->IO.MousePos```. I assume this is because GImGui is a pointer initialized to NULL and the static analyzer can't know that this is initialized somewhere. I suggest putting an IM_ASSERT() in front of the access, this hints the analyzer that we're sure that this pointer can't be 0:
+
+```cpp
+// We typically use ImVec2(-FLT_MAX,-FLT_MAX) to denote an invalid mouse position
+bool ImGui::IsMousePosValid(const ImVec2* mouse_pos)
+{
+    if (mouse_pos == NULL)
+        mouse_pos = &GImGui->IO.MousePos;
+    IM_ASSERT(mouse_pos);
+    const float MOUSE_INVALID = -256000.0f;
+    return mouse_pos->x >= MOUSE_INVALID && mouse_pos->y >= MOUSE_INVALID;
+}
+```
+
+#### imgui.cpp:4822:12: Access to field 'Flags' results in a dereference of a null pointer (loaded from field 'RootWindowForNav')
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imgui.cpp#L4813-L4823
+
+This one is a bit tricker, the analyzer thinks that the ```window->RootWindowForNav``` pointer in the while-loop-check can be NULL because ```ParentWindow``` pointers can be NULL, and inside the while loop the ```RootWindowForNav``` pointer is assigned a ```ParentWindow``` pointer, which might be NULL, and thus break the next while-check.
+
+Maybe a screenshot of the Xcode analyzer makes it clearer what's going on:
+
+<img width="1277" alt="screen shot 2019-01-25 at 12 13 34 pm" src="https://user-images.githubusercontent.com/1699414/51742859-3142ec80-209b-11e9-9768-f0247702e912.png">
+
+Putting an ```IM_ASSERT(parent_window)``` at the start of the function fixes the warning, but this won't work because the parent_window argument can obviously be a nullptr, so I think a fix would need to go into the while-loop.
+
+#### imgui_draw.cpp:2078:5: Access to field 'align' results in a dereference of a null pointer (loaded from variable 'c') (within a call to 'stbrp_pack_rects')
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imgui_draw.cpp#L2077-L2079
+
+This one looked very complicated because the nullptr access happens somewhere deep imstb_rectpack.h, but it's thankfully easy to fix by asserting that the ```pack_context``` pointer going into ```stbrp_pack_rect()``` can't be NULL:
+
+```cpp
+    }
+    IM_ASSERT(pack_context);
+    stbrp_pack_rects(pack_context, &pack_rects[0], pack_rects.Size);
+    for (int i = 0; i < pack_rects.Size; i++)
+```
+
+Maybe this check should better go at the start of the stbrp_pack_rects() function, not sure.
+
+####  imgui.cpp:9353:13: Value stored to 'p' is never read
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imgui.cpp#L9350-L9354
+
+In the line ```p += ImFormatString(...``` **p** is updated but not used afterwards. I guess the ```p +=``` can be removed.
+
+The following are all in imported STB headers:
+
+#### imstb_textedit.h:566:4: Value stored to 'i' is never read
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imstb_textedit.h#L566-L568
+
+The **i** variable is set to 0 twice.
+
+#### imstb_truetype.h:2371:13: Value stored to 'classDefTable' is never read
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imstb_truetype.h#L2363-L2372
+
+The last line before the ```break``` updates classDefTable, but this isn't used anymore in the function.
+
+#### imstb_truetype.h:2395:13: Value stored to 'classDefTable' is never read
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imstb_truetype.h#L2374-L2396
+
+Same problem in the case block below.
+
+#### imstb_truetype.h:3024:19: Value stored to 'dx' is never read
+
+https://github.com/ocornut/imgui/blob/e55678adec78d9cbd90b558ac936a0d7e6a88013/imstb_truetype.h#L3023-L3025
+
+The line ```dx = -dx``` seems to be redundant because dx isn't used anymore in this loop iteration, and reassigned from ```e->fdx``` furtherup in the loop body (```dy``` **is** used though).
+
+And that's all, as I said, I'm not sure whether you want to fix those at all (especially the non-critical dead-store warnings in imported STB headers).
+
+Cheers!

@@ -1,0 +1,29 @@
+for (int i = 0; i<inventory.size(); i++)
+{
+    ImGui::TextWrapped("%d", i);
+    ImGui::SameLine();
+    
+    /*if (ImGui::Button("Issue")) {
+        cout << "\n i :" << i << endl;
+        if(inventory[i].copies>0)
+            inventory[i].copies -= 1; }
+    } */
+        
+    ImGui::NextColumn();
+    ImGui::TextWrapped(inventory[i].book_name); ImGui::NextColumn();
+    ImGui::TextWrapped(inventory[i].author); ImGui::NextColumn();
+    ImGui::TextWrapped(inventory[i].getSubject()); ImGui::NextColumn();
+    ImGui::TextWrapped("%d", inventory[i].copies); ImGui::NextColumn();
+    ImGui::TextWrapped(inventory[i].getCourse()); ImGui::NextColumn();
+    
+    if (ImGui::Button("Delete")) {
+        cout << "\n i :" << i << endl;
+    }ImGui::SameLine();
+    
+    if (ImGui::Button("Edit")) {
+        cout << "\n i :" << i << endl;
+    }ImGui::NextColumn();   
+}
+ImGui::Columns(1);
+ImGui::Separator();
+ImGui::End();

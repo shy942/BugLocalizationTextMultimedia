@@ -1,0 +1,1 @@
+color picker widget provide perfect color version branch dear gui version wip branch docking renderer compiler ends imgui impl opengl cpp imgui impl sdl cpp compiler operating windows issue question choosing color white dragging circle color picker widget red float correct green blue variables screenshots video advance

@@ -1,0 +1,30 @@
+Solution 'example_freeglut_opengl2' (1 project)
+example_freeglut_opengl2
+	References
+	External Dependencies
+	imgui
+	imgui.cpp
+	imgui_draw.cpp
+	imgui_demo.cpp
+	imgui_internal.h
+	imgui_tables.cpp
+	imgui_widgets.cpp
+	sources
+	imgui_impl_glfw.cpp
+	imgui_impl_freeglut.cpp
+	imgui_impl_freeglut.h
+	imgui_impl_opengl2.cpp
+	imgui_impl_opengl2.h
+	main.cpp
+	READMET.txt
+	Application average 8.392 ms/frame (119.2 FPS)
+Microsoft Visual C++ Runtime Library
+	Debug Error!
+	Program: C:jp\research\research\jpantaleoni\imgui+=(ah...
+		example_freeglut_opengl2\Debug\example_freeglut_open
+		gl2.exe
+	abort() has been called
+	(Press Retry to debug the application)
+		Abort Retry Ignore
+C:\jp\research\research\jpantaleoni\imgui-master\examples	freeglut_opengl2\main.cpp(73)
+Matching lines: 4 Matching files: 3 Total files searched:  14

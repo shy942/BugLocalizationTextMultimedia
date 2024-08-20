@@ -1,0 +1,44 @@
+Dear ImGui DirectX9 Example
+
+▼ About Dear ImGui
+X
+
+Dear ImGui 1.00 WIP text.
+By Omar Cornut and all Dear ImGui contributors.
+Dear ImGui is licensed under the MIT License, see LICENSE for more information.
+▼ Config/Build Information
+
+Copy to clipboard
+
+Dear ImGui 1.80 WIP (17910)
+sizeof(size_t): 4, sizeof(ImDrawIdx): 2, sizeof(ImDrawVert): 20
+define: __cpluplus=199711
+define: _WIN32
+define: _MSC_VER=1916
+define: _MSVC_LANG=201402
+io.BackendPlatformName: imgui_impl_win32
+io.BackendRendererName: imgui_impl_dx9
+io.ConfigFlags: 0x00000000
+io.ConfigInputTextCursorBlink
+io.ConfigWindowsResizeFromEdges
+io.ConfigMemoryCompactTimer = 60.0
+io.BackendFlags: 0x00000000
+ HasMouseCursors
+ HasSetMousePos
+ RendererHasVtxOffset
+
+io.Fonts: 1 fonts, Flags: 0x00000000, TexSize: 512,64
+
+▼ Dear ImGui Demo
+Menu Examples Tools
+
+ dear imgui says hello. (1.80 WIP)
+ 
+▶ Configuration
+▶ Window options
+▶ Widgets
+▶ Layout & Scrolling
+▶ Popups & Modal windows
+▶ Tables & Columns
+▶ Filtering
+▶ Inputs, Navigation & Focus

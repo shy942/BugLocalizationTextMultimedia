@@ -1,0 +1,15 @@
+// style.AntiAliasedLines = false;
+// ImGui.cpp : 6000
+```
+// Borders example +10,10
+if ( window_border_size > 0.0f )
+{
+	window->DrawList->AddRect( window->Pos , window->Pos + window->Size + ImVec2( 10.f , 10.f ) , 
+	GetColorU32( ImGuiCol_Border ) , window_rounding , ImDrawCornerFlags_All ,window_border_size );
+}
+```
+the right lower pixel is not displayed
+with others, everything is fine
+
+![sharex_2018-02-25_13-43-25](https://user-images.githubusercontent.com/5619678/36640535-ed745a40-1a31-11e8-9408-017722165a4d.png)
+

@@ -1,0 +1,36 @@
+ImGui : 1.74
+Branch : Master
+
+the ImGuiColorEditFlags_NoInputs  applied in ColorEdit3 or ColorEdit4
+keep the space (used by inputs)
+
+the first line is without ImGuiColorEditFlags_NoInputs 
+the second line is with ImGuiColorEditFlags_NoInputs 
+![NoodlesPlate_MSVC_Debug_AmayS0MaLg](https://user-images.githubusercontent.com/1434736/71563407-10df9700-2a8f-11ea-8140-3fe8e147b663.png)
+
+i have fixed this problem like that (at line 4348 of imgui_widgets.cpp
+(but not sure if it work in all cases, mines are ok)
+```cpp
+if (label != label_display_end && !(flags & ImGuiColorEditFlags_NoLabel))
+{
+	window->DC.CursorPos = ImVec2(pos.x + w_full + style.ItemInnerSpacing.x, pos.y + style.FramePadding.y);
+        TextEx(label, label_display_end);
+}
+```
+become : 
+
+```cpp
+ if (label != label_display_end && !(flags & ImGuiColorEditFlags_NoLabel))
+ {
+	float w = w_full;
+	if (flags & ImGuiColorEditFlags_NoSmallPreview) w -= w_button;
+	if (flags & ImGuiColorEditFlags_NoInputs) w -= w_inputs;
+	window->DC.CursorPos = ImVec2(pos.x + w + style.ItemInnerSpacing.x, pos.y + style.FramePadding.y);
+        TextEx(label, label_display_end);
+ }
+```
+
+the result : 
+![NoodlesPlate_MSVC_Debug_Cwb7FPvFPh](https://user-images.githubusercontent.com/1434736/71563532-44bbbc00-2a91-11ea-8f23-a55143d13e17.png)
+
+

@@ -1,0 +1,10 @@
+Test Window
+Another Window
+Application average 16.941 ms
+
+clear color
+  
+R: 32    G: 75    B: 89
+H: 138   S: 163   V: 89
+
+#204B59

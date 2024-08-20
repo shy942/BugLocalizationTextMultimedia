@@ -1,0 +1,16 @@
+9017  void ImGui::ListBoxFooter()
+9018  {
+9019      ImGuiWindow* parent_window = GetParentWindow();
+9020      const ImRect bb = parent_window->DC.LastItemRect;
+9021      const ImGuiStyle& style = GetStyle();
+9022      
+9023      EndChildFrame();
+9024      
+9025      // Redclare item size so that it includes the label (we have stored the full size in LastItemRect)
+9026      // We call SameLine() to restore DC.CurrentLine* data
+9027      SameLine();
+9028      
+9029      parent_window->DC.CursorPos = bb.Min;
+9030      ItemSize(bb, style.FramePadding.y);
+9031      EndGroup();
+9032  }

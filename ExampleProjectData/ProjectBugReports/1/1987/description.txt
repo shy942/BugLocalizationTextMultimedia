@@ -1,0 +1,72 @@
+
+**Version/Branch of Dear ImGui:**
+
+1.63 WIP
+
+**Back-end file/Renderer/OS:** _(or specify if you are using a custom engine back-end)_
+Windows 10, OpenGL
+
+Back-ends: imgui_impl_opengl3.cpp
+
+**My Issue/Question:** 
+I have hooked the SwapBuffers function of OpenGL in a game. I then initialise ImGui in this hooked function (same thread as games OpenGL so can easily access it.) When I call ImGui::ShowDemoWindow(); my game crashes due to line 6445 of imgui.cpp which consists of `window->DrawList->PushTextureID(g.Font->ContainerAtlas->TexID);`
+
+The crash message states it is a Win32 Exception: 0xc0000005 [0x44]
+
+Clearly I am not initialising ImGui properly.
+
+My Code In The Hooked Function
+```
+BOOL __stdcall hwglSwapBuffers(_In_ HDC hDc)
+{
+	if (!ImGUI_Initialized) {
+		setup_ortho();
+		ImGuiContext* context = ImGui::CreateContext();
+		ImGui::SetCurrentContext(context);
+		ImGuiIO& io = ImGui::GetIO();
+
+		io.DeltaTime = 1.0f / 60.0f;
+		io.DisplaySize.x = 1920;
+		io.DisplaySize.y = 1080;
+
+		io.Fonts->AddFontDefault();
+		unsigned char * pixels;
+		int width, height, bytes_per_pixels;
+		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixels);
+		
+		ImGui_ImplOpenGL3_Init(NULL);
+		ImGUI_Initialized = true;
+		std::cout << "ImGui Initialized..." << std::endl;
+	}
+
+	ImGui::ShowDemoWindow();
+
+	//Test to see if OGL was hooked correctly
+	//glBegin(GL_LINES);
+	//glVertex2f(100, 100);
+	//glVertex2f(200, 200);
+	//glEnd();
+
+	return owglSwapBuffers(hDc);
+}
+```
+
+setup_ortho() function. Was told to add this by another user who had similar issues with rendering menu etc. Doesn't seem to affect my code with or without it.
+```
+void setup_ortho() {
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+	glPushMatrix();
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glViewport(0, 0, viewport[2], viewport[3]);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, viewport[2], viewport[3], 0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glDisable(GL_DEPTH_TEST);
+}
+```
+**Screenshots/Video** _(you can drag files here)_
+![image](https://user-images.githubusercontent.com/32690103/43288481-e964b0de-911f-11e8-98fb-90fd105900a1.png)
+

@@ -1,0 +1,15 @@
+![image](https://user-images.githubusercontent.com/11604039/134026107-d8d5f476-7961-4c75-a864-3fe5cc4461c2.png)
+
+bd is null.
+
+Happens 100% when I close my app. 
+
+Tired of having to add a null check after every merge so I figured I might as well report it.
+
+Before anyone says "just define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD", no, that's not correct. 
+
+Libraries shouldn't crash on nullptrs.
+
+Thanks!
+
+

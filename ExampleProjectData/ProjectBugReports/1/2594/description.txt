@@ -1,0 +1,258 @@
+**Version/Branch of Dear ImGui**
+
+Version: 1.71 WIP
+Branch: docking/8dc04a4
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_opengl3.cpp + imgui_impl_win32.cpp
+Compiler: MSVC  19.20.27508.1
+Operating System: Windows 10
+
+**My Issue/Question:**
+
+Update to the latest version of docking and now all the text looks messed up. (See screenshot). Also trying to move the window outside of the main window renders it in purple, it also sometimes crashes my nvidia driver. 
+
+This seems to only be a issue with OpenGL since I have tested it on win32 dx9 10 and 11
+
+**Screenshots/Video**
+![image](https://user-images.githubusercontent.com/9114513/58638367-eeb54900-82f4-11e9-986f-6e390fc94c2a.png)
+
+![Untitled](https://user-images.githubusercontent.com/9114513/58639017-63d54e00-82f6-11e9-8bbf-d14409d2633b.png)
+
+**Standalone, minimal, complete and verifiable example: (see #2261)**
+
+```c++
+#undef UNICODE
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_opengl3.h"
+#include <stdio.h>
+#include <GL/gl3w.h>
+
+// Data
+static HDC g_Device = 0;
+static HGLRC g_GLDeviceContext = 0;
+
+// Forward declarations of helper functions
+bool CreateDeviceGL(HWND hWnd);
+void CleanupDeviceGL();
+void PresentGL();
+LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+// Main code
+int main(int, char**)
+{
+    ImGui_ImplWin32_EnableDpiAwareness();
+
+    // Create application window
+    WNDCLASSEX wc = {
+        sizeof(WNDCLASSEX),
+        CS_OWNDC,
+        WndProc,
+        0L,
+        0L,
+        GetModuleHandle(NULL),
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        ("ImGui Example"),
+        NULL
+    };
+    ::RegisterClassEx(&wc);
+    HWND hwnd = ::CreateWindowEx(
+        0,
+        wc.lpszClassName,
+        ("Dear ImGui OpenGL Example"),
+        WS_OVERLAPPEDWINDOW,
+        100, 100,
+        1280, 800,
+        NULL, NULL,
+        wc.hInstance,
+        NULL);
+
+    CreateDeviceGL(hwnd);
+
+    gl3wInit();
+
+    const char* ver = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    if (ver) {
+        OutputDebugStringA("GL_VERSION = \"");
+        OutputDebugStringA(ver);
+        OutputDebugStringA("\"\n");
+    }
+
+    ::ShowWindow(hwnd, SW_SHOWDEFAULT);
+    ::UpdateWindow(hwnd);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;        
+
+    ImGui::StyleColorsDark();
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+    ImGui_ImplWin32_Init(hwnd);
+    ImGui_ImplOpenGL3_Init(0);
+
+    // Our state
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    // Main loop
+    MSG msg;
+    ZeroMemory(&msg, sizeof(msg));
+    while (msg.message != WM_QUIT)
+    {
+        if (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
+        {
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
+            continue;
+        }
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+       {
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3("clear color", (float*)& clear_color); // Edit 3 floats representing a color
+
+            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        // Rendering
+        ImGui::Render();
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Update and Render additional Platform Windows
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
+        PresentGL();
+    }
+
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplWin32_Shutdown();
+    ImGui::DestroyContext();
+
+    CleanupDeviceGL();
+    ::DestroyWindow(hwnd);
+    ::UnregisterClass(wc.lpszClassName, wc.hInstance);
+
+    return 0;
+}
+
+// Helper functions
+bool CreateDeviceGL(HWND hWnd)
+{
+    PIXELFORMATDESCRIPTOR pfd =
+    {
+        sizeof(PIXELFORMATDESCRIPTOR),
+        1,
+        PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+        PFD_TYPE_RGBA,
+        32,
+        24,
+        8,
+        PFD_MAIN_PLANE,
+    };
+
+    g_Device = GetDC(hWnd);
+    auto pf = ChoosePixelFormat(g_Device, &pfd);
+    if (pf == 0) {
+        MessageBox(NULL, "ChoosePixelFormat() failed:  "
+            "Cannot find a suitable pixel format.", "Error", MB_OK);
+        return false;
+    }
+    if (SetPixelFormat(g_Device, pf, &pfd) == FALSE) {
+        MessageBox(NULL, "SetPixelFormat() failed:  "
+            "Cannot set format specified.", "Error", MB_OK);
+        return false;
+    }
+    DescribePixelFormat(g_Device, pf, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
+
+    g_GLDeviceContext =  wglCreateContext(g_Device);
+    wglMakeCurrent(g_Device, g_GLDeviceContext);
+    
+    return true;
+}
+
+void CleanupDeviceGL()
+{
+    wglDeleteContext(g_GLDeviceContext);
+}
+
+void PresentGL()
+{
+    ::SwapBuffers(g_Device);
+}
+
+// Win32 message handler
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+        return true;
+
+    switch (msg)
+    {
+        case WM_SIZE:
+            //glViewport(0, 0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
+            return 0;
+        case WM_DESTROY:
+            ::PostQuitMessage(0);
+            return 0;
+        case WM_DPICHANGED:
+            if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DpiEnableScaleViewports)
+            {
+                const RECT* suggested_rect = (RECT*)lParam;
+                ::SetWindowPos(hWnd, NULL, suggested_rect->left, suggested_rect->top, suggested_rect->right - suggested_rect->left, suggested_rect->bottom - suggested_rect->top, SWP_NOZORDER | SWP_NOACTIVATE);
+            }
+            break;
+    }
+    return ::DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+```
+
+**Debug output: **
+GL_VERSION = "4.6.0 NVIDIA 430.86"
+
+**Related to**
+https://github.com/ocornut/imgui/issues/2593

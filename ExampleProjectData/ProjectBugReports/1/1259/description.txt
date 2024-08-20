@@ -1,0 +1,15 @@
+Hi, 
+Not sure if this 100% an issue or not, or an error on my part but the issue i'm having is that on exit the program crashes due to the freeing of the font, (the font works perfectly fine in the program) here's some screenshots:
+![imgui error](https://user-images.githubusercontent.com/24617064/28902021-5db0ba48-77ca-11e7-8cc1-f177830649c5.png)
+![imgui error 2](https://user-images.githubusercontent.com/24617064/28902025-63973dec-77ca-11e7-8081-07d8bdb95ad1.png)
+![add](https://user-images.githubusercontent.com/24617064/28902354-61ebc8e4-77cc-11e7-98d5-e0a2375167a9.png)
+
+Code:
+`auto& io = ImGui::GetIO();
+io.IniFilename = nullptr;
+io.Fonts->AddFontFromMemoryTTF(&rawData, sizeof(rawData), 16.0f);`
+rawData being a byte array from HXD and the size is 252032.
+ 
+Thanks,
+
+ Phrasing

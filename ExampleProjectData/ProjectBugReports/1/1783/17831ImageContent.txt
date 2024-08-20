@@ -1,0 +1,48 @@
+  919 class ImVector
+{
+  920 public:
+  921     int                         Size;
+  922     int                         Capacity;
+  923     T*                          Data;
+  924 
+  925     typedef T                   value_type;
+  926     typedef int                 iterator;
+  927     typedef const int           const_iterator;
+  928 
+  929     ImVector()                  { Size = Capacity = 0; Data = NULL; }
+  930     ~ImVector()                 { if (Data) ImGui::MemFree(Data); }
+  931 
+  932     inline bool                 empty() const                   { return Size == 0; }
+  933     inline int                  size() const                    { return Size; }
+  934     inline int                  capacity() const                { return Capacity; }
+  935 
+  936     inline value_type&          operator[](int i)               { IM_ASSERT(i < Size); return Data[i]; }
+  937     inline const value_type&    operator[](int i) const         { IM_ASSERT(i < Size); return Data[i]; }
+  938 
+  939     inline void                 clear()                         { if (Data) { Size = Capacity = 0; ImGui::MemFree(Data); Data = NULL; } }
+  940     inline iterator             begin()                         { return Data; }
+  941     inline const_iterator       begin() const                   { return Data; }
+  942     inline iterator             end()                           { return Data + Size; }
+  943     inline const_iterator       end() const                     { return Data + Size; }
+  944     inline value_type&          front()                         { IM_ASSERT(Size > 0); return Data[0]; }
+  945     inline const value_type&    front() const                   { IM_ASSERT(Size > 0); return Data[0]; }
+  946     inline value_type&          back()                          { IM_ASSERT(Size > 0); return Data[Size-1]; }
+  947     inline const value_type&    back() const                    { IM_ASSERT(Size > 0); return Data[Size-1]; }
+  948     inline void                 swap(ImVector& rhs)             { int rhs_size = rhs.Size; rhs.Size = Size; Size = rhs_size; }
+  949 
+  950     inline int                  _grow_capacity(int size) const  { int new_capacity = Capacity ? (Capacity + Capacity/2) : 8; return new_capacity; }
+  951     inline void                 resize(int new_size)            { if (new_size > Capacity) reserve(_grow_capacity(new_size)); Size = new_size; }
+  952     inline void                 resize(int new_size, const T& v){ if (new_size > Capacity) reserve(_grow_capacity(new_size)); for (int n = Size; n < new_size; n++) Data[n] = v; Size = new_size; }
+  953     inline void                 reserve(int new_capacity)
+  954                                 {
+  955                                     if (new_capacity <= Capacity) return;
+  956                                     T* new_data = (value_type*)ImGui::MemAlloc((size_t)new_capacity * sizeof(T));
+  957                                     if (Data)
+  958                                         memcpy(new_data, Data, (size_t)Size * sizeof(T));
+  959                                     ImGui::MemFree(Data);
+  960                                     Data = new_data;
+  961                                     Capacity = new_capacity;
+  962                                 }
+  963 
+  964     inline void                 push_back(const value_type& v)  { if (Size >= Capacity) reserve(_grow_capacity(Size+1)); Data[Size++] = v; }
+  965     inline void                 pop_back()                      { IM_ASSERT(Size > 0); Size

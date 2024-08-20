@@ -1,0 +1,47 @@
+return ImMax(wrap_pos_x - pos.x, 1.0f);
+}
+
+//-----------------------------------------------
+
+void* ImGui::MemAlloc(size_t sz)
+{
+    GImGui->IO.MetricsAlloc++;
+    return GImGui->IO.MemAllocFn(sz);
+}
+
+void ImGui::MemFree(void* ptr)
+{
+    if (ptr) GImGui->IO.MetricsAlloc--;
+    return GImGui->IO.MemFreeFn(ptr);
+}
+
+const char* ImGui::GetClipboardText()
+{
+    return GImGui->IO.GetClipboardTextFn ? GImGui->IO.GetClipboardTextFn(GImGui->IO.ClipboardUserData) : "";
+}
+
+void ImGui::SetClipboardText(const char* text)
+{
+    if (GImGui->IO.SetClipboardTextFn)
+        GImGui->IO.SetClipboardTextFn(GImGui->IO.ClipboardUserData, text);
+}
+
+const char* ImGui::GetVersion()
+{
+    return IMGUI_VERSION;
+}
+
+// Internal state access - if you want to share ImGui state between modules (e.g., DLL) or allocate it yourself
+// Note that we still point to some static data and members (such as GFontAtlas), so the state instance you end up using will point to the static data within its module
+
+< 0 Changes 0 authors, 0 Changes >
+
+GImGui 0x00007ff66446c230 { DisplaySize = (x=80... }
+
+GImGui 0x00007ff66446def0 ImGuiIO *
+
+GImGui->IO.MemFreeFn 0x00007ff7bc722f160 { ucrtbase.dll!0x00007fff... }
+
+GImGui->IO.MetricsAlloc 40 int
+
+ptr 0x00007ff664421190 { 0x00007ff653a591c0 ".... }

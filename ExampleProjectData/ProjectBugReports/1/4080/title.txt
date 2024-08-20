@@ -1,0 +1,1 @@
+InputText caret position is not rounded to the next integer

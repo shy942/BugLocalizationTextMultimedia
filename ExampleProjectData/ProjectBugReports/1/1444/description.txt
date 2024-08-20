@@ -1,0 +1,32 @@
+Hello,
+
+I migrated some applications using ImGui from version 1.51 to latest 1.53, and I am facing a little bug related to tooltips using `ImGuiWindowFlags_AlwaysAutoResize` flag when drawing columns inside.
+
+In the latest version 1.53, the tooltips are truncated, as if they were considering only the first row and not the 3 columns which inside : 
+
+<img width="220" alt="screen shot 2017-11-16 at 15 54 31" src="https://user-images.githubusercontent.com/16628136/32897635-77bfabf0-cae6-11e7-84bd-c65fb83db832.png">
+
+Here is a source code to repro :
+```
+ImGui::Begin("tooltip_window", NULL, ImGuiWindowFlags_Tooltip | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_ShowBorders | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize);
+{
+	ImGui::Text("Row 0");
+	ImGui::Separator();
+	ImGui::Columns(3, "columns", false);
+	ImGui::SetColumnOffset(0, 0.0f);
+	ImGui::SetColumnOffset(1, 30.0f);
+	ImGui::SetColumnOffset(2, 95.0f);
+	ImGui::Text("AAAA");
+	ImGui::NextColumn();
+	ImGui::Text("BBBB");
+	ImGui::NextColumn();
+	ImGui::Text("Row 1 Some long text");
+	ImGui::NextColumn();
+	ImGui::Columns(1);
+}
+ImGui::End();
+```
+In version 1.51, it was working well.
+
+Best regards,
+

@@ -1,0 +1,55 @@
+Exception Thrown
+X Exception thrown at 0x00007FFB7F823397 (ucrtbased.dll) in
+    0xC0000005: Access violation reading location 0x000000C50000047F.
+
+Copy Details
+[]
+v Exception Settings
+    Erase when this exception type is thrown
+    Except when thrown from:
+        [x]  ucrtbased.dll
+Open Exception Settings | Edit Conditions
+
+==============================================================
+
+Value                                                                                 Type
+(DisplaySize.x=800.000000,y=500.000000) | DeltaTime=0.0197177012 | IniSavingRate=5.00000000 ...) ImGuiIO
+(x=800.000000,y=500.000000)                                                              ImVec2
+0.0197177012                                                                             float
+5.00000000                                                                               float
+nullptr                                                                                  C ImFontAtlas GImDefaultFon...)
+(ImGuiLog.840000007742480 "imgui_log.txt"                                                const char*
+nullptr                                                                                  const char*
+0.00000000000000000                                                                      float
+0.00000000000000000                                                                      float
+0.300000000                                                                              float
+-1                                                                                       int
+0.00000000000000000                                                                      float
+0.00000000000000000                                                                      float
+0.000000000                                                                              float
+0.00000000000000000                                                                      int[19]
+0                                                                                        float
+0.00000000000000000                                                                      float
+0x0000000000000000 {...}                                                                 ImFontAtlas *
+0x000000c50000047f                                                                       void *
+(ImVec4(1.00000000,1.00000000,1.00000000,0.500000000                                    ImVec4
+0x00000066eebfb1ef "io"                                                                 unsigned char *
+0x000000006c7efc6d "zy"                                                                 unsigned int *	
+0x000002ed6b7a39e4 (4294967295)                                                         int
+128                                                                                     int
+512                                                                                     int
+(ImVeckeyboard setup,ptr                                                                     ImVec2
+(x=400.000000,y=250.000000) | DeltaTime=0.00170900000 | IniSavi...)                    void *	
+(ImGuiContext=0x000...) ImGuiIO,0x0007f 125cb98 cbi...) ImFonter'FontSize: bold,...)    ImGuiFont*
+nullptr                                                                                 float
+0                                                                                       bool
+0x00000000000000000                                                                      const char *                                                       
+(ImFontAtlas *DrawBackdrop,DrawData(1)                                   void(), DrawData Im ....)
+(ImFontData,drawIndexList TextureID,drawData,.......)                                      void *                   
+(nullptr,0x00070020 "DrawData")                                                         void *                    
+(ImGuiInit:021cc1f)
+(void *)(x98=400.000000 =ptr)  iniInit-----------------------------------------------------------------------------------------------------------------------------------------------------                                                                               void *    
+void(__open0.00000000000        int<float)
+
+)`nullCharacter'CharCallbackData<unsignedfloat,n dikf2.000000000000000  void* Tcx, `xapons13octat9_CA00, usr se... float
+(always3.000000000000000 float          int void *)void(imGui_clearEmptytextxIDsDrawBackrichtung XOX XB=9. characterData)                void) int *);

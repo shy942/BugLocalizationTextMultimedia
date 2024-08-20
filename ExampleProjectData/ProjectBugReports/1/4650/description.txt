@@ -1,0 +1,17 @@
+Hi,
+
+I was really excited to find imgui and emscripten however I seem to be falling at the first hurdle.  I'm trying the example (example_emscripten_wgpu) as is and everything compiles and runs but all I get in the browser is a black screen. 
+
+successful build:
+![image](https://user-images.githubusercontent.com/1518180/137223885-924cfd45-6f51-4417-83f5-3a260de2f911.png)
+
+git log (current version from gitlab)
+![image](https://user-images.githubusercontent.com/1518180/137223541-4bb48cc4-c7a5-4fad-930e-ba6ac9a2607d.png)
+
+FYI, emscripten environment seems sane / working:
+![image](https://user-images.githubusercontent.com/1518180/137224167-3d3a649c-91fa-4bae-a7ab-98965acb77d0.png)
+
+Here's what I see in the browser:
+![image](https://user-images.githubusercontent.com/1518180/137224394-f29971d6-8a12-44c1-8232-7805300f9cda.png)
+
+Any hints / tips appreciated!

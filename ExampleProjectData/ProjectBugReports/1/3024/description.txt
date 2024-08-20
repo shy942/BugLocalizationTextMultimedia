@@ -1,0 +1,117 @@
+**Version/Branch of Dear ImGui:**
+
+Version: v1.75
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_Win32.cpp + imgui_impl_DX11.cpp
+Compiler: vs
+Operating System: windows 10
+
+**My Issue/Question:**
+
+When disabling multiple widgets with `ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true)` and `ImGui::PopItemFlag()`, the widgets in a `BeginChild()` will not be disabled if there is another widget disabled before them with `ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true)` and `ImGui::PopItemFlag()`.
+
+This is most likely because of the change made in "[Internals: PushItemFlag() flags are inherited by BeginChild().](https://github.com/ocornut/imgui/commit/f843facba4d012e225fb55b198001dbfcd0cc099)", which changes (now line [5844](https://github.com/ocornut/imgui/blob/v1.75/imgui.cpp#L5844) in v1.75) `window->DC.ItemFlags` to inherit the `ItemFlags` from `parent_window` making:
+```cpp
+if ((flags & ImGuiWindowFlags_ChildWindow) && (window->DC.ItemFlags != parent_window->DC.ItemFlags))
+```
+_line [5852](https://github.com/ocornut/imgui/blob/v1.75/imgui.cpp#L5852) in v1.75_  
+always return false, because we just set `window->DC.ItemFlags` to `parent_window->DC.ItemFlags` for child windows.
+
+Reverting the change made in "[Internals: PushItemFlag() flags are inherited by BeginChild().](https://github.com/ocornut/imgui/commit/f843facba4d012e225fb55b198001dbfcd0cc099)" fixes the issue for this example because the `ItemFlags` are still inherited in:
+```cpp
+if ((flags & ImGuiWindowFlags_ChildWindow) && (window->DC.ItemFlags != parent_window->DC.ItemFlags))
+{
+	window->DC.ItemFlags = parent_window->DC.ItemFlags;
+	window->DC.ItemFlagsStack.push_back(window->DC.ItemFlags);
+}
+```
+_line [5852](https://github.com/ocornut/imgui/blob/v1.75/imgui.cpp#L5852) in v1.75_
+
+But because more widgets then `BeginChild` might be impacted a better solution might be changing:
+```cpp
+if ((flags & ImGuiWindowFlags_ChildWindow) && (window->DC.ItemFlags != parent_window->DC.ItemFlags))
+{
+	window->DC.ItemFlags = parent_window->DC.ItemFlags;
+	window->DC.ItemFlagsStack.push_back(window->DC.ItemFlags);
+}
+```
+to
+```cpp
+// Maybe check the parent stack otherwise we might be adding to the stack and never popping it.
+if (flags & ImGuiWindowFlags_ChildWindow)
+	window->DC.ItemFlagsStack.push_back(window->DC.ItemFlags);
+```
+_both from line [5852](https://github.com/ocornut/imgui/blob/v1.75/imgui.cpp#L5852) in v1.75_
+
+Which fixes also the issue for this example.
+
+**Screenshots/Video**
+
+![Screenshot](https://user-images.githubusercontent.com/32653890/74587548-2e8f9e00-4ff4-11ea-9c1e-33d647e51b02.png)
+_mouse is drawn on afterwards because my screenshot tool does not capture it_  
+This screenshot shows the `Combo()` still reacting to a hover, even though it should be disabled.
+
+**Standalone, minimal, complete and verifiable example:**
+```cpp
+static bool disabledAll = false;
+static bool disabled1 = false;
+static bool disabled2 = false;
+
+const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
+
+static int combo1 = 0;
+static int combo2 = 0;
+
+ImGui::Begin("Hello, world!");
+	ImGui::Checkbox("Disable all", &disabledAll);
+	if (disabledAll)
+	{
+		ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+	}
+	if (ImGui::BeginChild("child"))
+	{
+                // Only the `parent_window->DC.ItemFlags` is copied and not pushed
+                // to the `ItemFlagsStack`.
+		ImGui::Indent();
+		ImGui::Checkbox("Disable combo##combo1", &disabled1);
+		if (disabled1)
+		{
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+		}
+		ImGui::Combo("##combo1", &combo1, items, IM_ARRAYSIZE(items));
+		if (disabled1)
+		{
+                        // If this `Combo()` was disabled we pop the `ItemFlagsStack` which
+                        // then becomes empty and resets to `ImGuiItemFlags_Default_ `.
+                        // Making the next `Combo()` not disabled.
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+		ImGui::Checkbox("Disable combo##combo2", &disabled2);
+		if (disabled2)
+		{
+			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
+			ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.6f);
+		}
+		ImGui::Combo("##combo2", &combo2, items, IM_ARRAYSIZE(items));
+		if (disabled2)
+		{
+			ImGui::PopItemFlag();
+			ImGui::PopStyleVar();
+		}
+		ImGui::Unindent();
+	}
+	ImGui::EndChild();
+	if (disabledAll)
+	{
+		ImGui::PopItemFlag();
+		ImGui::PopStyleVar();
+	}
+ImGui::End();
+```
+

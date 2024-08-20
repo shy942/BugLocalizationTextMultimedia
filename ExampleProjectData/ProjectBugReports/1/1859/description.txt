@@ -1,0 +1,19 @@
+**Version/Branch of Dear ImGui:**
+
+1.60
+
+**Back-end file/Renderer/OS:** 
+
+Windows 10 Direct3D 11.0
+
+**My Issue/Question:** 
+
+When we load a Unicode font TTF file using `AddFontFromFileTTF(GetGlyphRangesChinese)`, the program creates a texture with a full set of Chinese characters, which **consumes 200+MB memory only for displaying fonts**, while a non-Unicode fonts will only consume about 10MB memory.
+
+This is not a bug though, but since we will only use **1% part of Chinese characters in character set**, I wonder if there is some way to optimize the memory allocation so that we don't create the texture for the whole character set, but only for the character that we really need. There are about 60k characters in Chinese Unicode fonts and much more for a multi-language font, this will be a problem when we have a memory budget.
+
+**Screenshots/Video** 
+Below is the font texture that from the font Deng.ttf(??), which is a 4k x 8k texture that ImGui created.
+
+<img width="1916" alt="capture" src="https://user-images.githubusercontent.com/25875303/40951677-9dc44a9c-68aa-11e8-9ffc-1d8a36025455.PNG">
+

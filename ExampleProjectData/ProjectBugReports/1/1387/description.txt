@@ -1,0 +1,41 @@
+I would like to propose adding support for top-level menu items. Sometimes I have a command that is very important (let's call it "VIP"), which I would like to be accessible within one click, not inside some menu. I tried following code:
+
+```cpp
+if(ImGui::BeginMainMenuBar())
+{
+    if(ImGui::BeginMenu("File"))
+    {
+        if(ImGui::MenuItem("Exit"))
+            // Exit...
+        ImGui::EndMenu();
+    }
+
+    if(ImGui::BeginMenu("Edit"))
+    {
+        //...
+        ImGui::EndMenu();
+    }
+
+    if(ImGui::BeginMenu("Window"))
+    {
+        //...
+        ImGui::EndMenu();
+    }
+
+    if(ImGui::MenuItem("VIP")) // !!!
+        // Very important command...
+
+    if(ImGui::BeginMenu("Help"))
+    {
+        //...
+        ImGui::EndMenu();
+    }
+
+    ImGui::EndMainMenuBar();
+}
+```
+
+But it doesn't work as expected. "VIP" menu item fills all remaining space and "Help" menu after it isn't shown at all. Wrapping `ImGui::MenuItem("VIP")` with `ImGui::PushItemWidth` / `PopItemWidth` doesn't help either.
+
+![imgui_toplevelmenuitem](https://user-images.githubusercontent.com/10674866/31859904-a36ebf26-b712-11e7-9246-a17850127d9b.png)
+

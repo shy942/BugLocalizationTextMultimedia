@@ -1,0 +1,163 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.8.3
+Branch: just grabbed the Releases source
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_win32.cpp + imgui_impl_glfw.cpp + imgui_impl_opengl3.cpp
+Using GLFW 3.34 and the newest version of GL3W.
+Compiler: default Visual Studio Community 2019 compiler, C++17
+Operating System: Windows 10 21H1
+
+**My Issue/Question:**
+
+Just dropping the necessary source and header files into a project causes a lot of linking errors to pop up.
+The files are compiled as per the build output:
+```
+Build started...
+1>------ Build started: Project: XXX, Configuration: Debug x64 ------
+1>entrypoint.cpp
+1>imgui.cpp
+1>imgui_demo.cpp
+1>imgui_draw.cpp
+1>imgui_impl_glfw.cpp
+1>imgui_impl_opengl3.cpp
+1>imgui_impl_win32.cpp
+1>Generating Code...
+1>context.c
+1>egl_context.c
+1>gl3w.c
+1>init.c
+1>input.c
+1>monitor.c
+1>osmesa_context.c
+1>wgl_context.c
+1>win32_init.c
+1>win32_joystick.c
+1>win32_monitor.c
+1>win32_thread.c
+1>win32_time.c
+1>win32_window.c
+1>window.c
+1>xkb_unicode.c
+1>Generating Code...
+1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+1>imgui.obj : error LNK2019: unresolved external symbol "void __cdecl ImGui::Separator(void)" (?Separator@ImGui@@YAXXZ) referenced in function "void __cdecl ImGui::ShowMetricsWindow(bool *)" (?ShowMetricsWindow@ImGui@@YAXPEA_N@Z)
+1>imgui_demo.obj : error LNK2001: unresolved external symbol "void __cdecl ImGui::Separator(void)" (?Separator@ImGui@@YAXXZ)
+1>imgui.obj : error LNK2019: unresolved external symbol "void __cdecl ImGui::Dummy(struct ImVec2 const &)" (?Dummy@ImGui@@YAXAEBUImVec2@@@Z) referenced in function "void __cdecl RenderViewportsThumbnails(void)" (?RenderViewportsThumbnails@@YAXXZ)
+1>imgui_demo.obj : error LNK2001: unresolved external symbol "void __cdecl ImGui::Dummy(struct ImVec2 const &)" (?Dummy@ImGui@@YAXAEBUImVec2@@@Z)
+// [...] more linking errors
+```
+The files are included in the project as per screenshot below.
+
+**Screenshots/Video**
+
+![obraz](https://user-images.githubusercontent.com/41419822/128853565-eb2031e5-626a-4bfd-8610-0b52e351320b.png)
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+```cpp
+#pragma once
+
+// Macros
+#define DIE(x) { fprintf(stderr, x); exit(EXIT_FAILURE); }
+
+// ImGui stuff
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
+// Normal includes
+#include <filesystem>
+#include <fstream>
+
+namespace fs = std::filesystem;
+using ofs = std::ofstream;
+using ifs = std::ifstream;
+using std::string;
+
+const string optFile = "options.json", modDir = "mods", assetDir = "assets";
+
+static void glfw_error_callback(int error, const char* description)
+{
+	fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+}
+
+int main(int argc, char** argv)
+{
+	// Init GLFW
+	glfwSetErrorCallback(glfw_error_callback);
+	if (!glfwInit()) DIE("Failed to initialize GLFW!\n");
+
+	GLFWwindow* window = glfwCreateWindow(1280, 720, "XXX", NULL, NULL);
+	if (window == NULL) DIE("Failed to initialize GLFW window!\n");
+
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1); // Enable vsync
+
+	// Init OpenGL loader
+	if (gl3wInit()) DIE("Failed to initialize OpenGL loader!\n");
+
+	// Init ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable keyboard
+	ImGui::StyleColorsDark();
+
+	// Setup renderer backends
+	const char* glsl_version = "#version 330 core";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
+	// Create directories and files necessary for running the app
+	if (!fs::exists(assetDir)) fs::create_directory(assetDir);
+	if (!fs::exists(modDir)) fs::create_directory(modDir);
+	if (!fs::exists(optFile)) ofs(optFile) << "sample options file";
+
+	// Draw
+	while (!glfwWindowShouldClose(window))
+	{
+		// Clear colour
+		static ImVec4 clear_color = ImVec4(113.f / 255.f, 54.f / 255.f, 138.f / 255.f, 255.f / 255.f);
+
+		// Poll and handle events (inputs, window resize, etc.)
+		glfwPollEvents();
+
+		// Begin frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		// Render demo window
+		ImGui::ShowDemoWindow();
+
+		// Render
+		ImGui::Render();
+		int display_w, display_h;
+		glfwGetFramebufferSize(window, &display_w, &display_h);
+		glViewport(0, 0, display_w, display_h);
+		glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
+		glClear(GL_COLOR_BUFFER_BIT);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		glfwSwapBuffers(window);
+	}
+
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+
+	return EXIT_SUCCESS;
+}
+```

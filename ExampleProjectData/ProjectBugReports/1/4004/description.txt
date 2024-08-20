@@ -1,0 +1,39 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.8.3
+Branch: master
+Commit: 00d570e280533bca9cf6e5652d0f2eb131d032e7
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_glfw.cpp + imgui_impl_opengl3.cpp
+Compiler: clang-1200.0.32.29
+Operating System: macOS 11.2.3
+
+**My Issue/Question:**
+
+`LabelText` only resize its own height based on the label. If used with a value containing line breaks these will be clipped. (See 3rd row in the screenshot.
+
+I would expect the sizing to be based on the biggest of the label and value texts
+
+**Screenshots/Video**
+
+![image](https://user-images.githubusercontent.com/56919/113481134-1bf65380-9498-11eb-8028-35e9df9f3fc6.png)
+
+
+**Standalone, minimal, complete and verifiable example:** 
+```cpp
+// Put this in any example program
+ImGui::Begin("Multiline LabelText");
+    ImGui::Separator();
+    ImGui::LabelText("Single line label", "Single line text");
+    ImGui::Separator();
+    ImGui::LabelText("Multi\n line\n label", "Single line text");
+    ImGui::Separator();
+    ImGui::LabelText("Single line label", "Multi\n line\n text");
+    ImGui::Separator();
+    ImGui::LabelText("Single line label", "Single line text");
+    ImGui::Separator();
+ImGui::End();
+```
+

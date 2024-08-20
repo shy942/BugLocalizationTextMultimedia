@@ -1,0 +1,1 @@
+freeing font memory crash issue error issue exit program crashes freeing font font works perfectly fine program screenshots code auto gui ini filename nullptr fonts add font memory ttf raw data sizeof raw data raw data byte array hxd size phrasing

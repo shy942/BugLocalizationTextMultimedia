@@ -1,0 +1,31 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.74 WIP (3c238ecae30b264aa8cf0509f1e24a6c8e1d6d21 latest commit at this time, but the same issue is even in much older versions)
+Branch: master
+
+Back-ends: imgui_impl_dx11.cpp + imgui_impl_win32.cpp
+Compiler: msvc 2019
+Operating System: Win10
+
+**My Issue/Question:**
+
+Lines of a triangle have nonuniform thickness
+
+**Screenshots/Video**
+
+![image](https://user-images.githubusercontent.com/153526/67474154-48c3fb80-f654-11e9-95ef-e5ac695f4497.png)
+
+**Standalone, minimal, complete and verifiable example:** 
+
+```
+        ImGui::Begin("test");
+        auto dl = ImGui::GetWindowDrawList();
+        const ImVec2 o = ImGui::GetCursorScreenPos();
+
+        dl->AddTriangle(o, ImVec2(o.x + 100, o.y + 0), ImVec2(o.x + 0, o.y + 100), IM_COL32(0, 255, 0, 255), 3);
+        ImGui::End();
+```
+
+If I do this, the triangle looks allright:
+![image](https://user-images.githubusercontent.com/153526/67474601-05b65800-f655-11e9-98ea-36f4a06eb7cf.png)
+

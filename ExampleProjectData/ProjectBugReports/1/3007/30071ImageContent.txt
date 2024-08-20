@@ -1,0 +1,15 @@
+Light removed
+Light removed
+Spotlight created
+Classname [func_cartonbox] spawned at 239.91 -245
+0.0002 seconds taken
+Light removed
+Spotlight created
+Classname [func_cartonbox] spawned at 154.82 -192
+
+59.93
+16.69ms
+16.56ms
+0.12ms
+
+userPos: -301.4 -256.5 375.0

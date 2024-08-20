@@ -1,0 +1,33 @@
+Dear ImGui DirectX9 Example
+
+▼ Dear ImGui Style Editor
+█ Hello, world!
+██ Colorful Text
+██ Demo Window
+0 FrameRounding
+▣ WindowBorder ▣ PopupBorder
+▣ FrameBorder float
+ Save Ref Revert Ref clear color
+Button counter = 0
+Sizes Colors Fonts Rendering
+(?)
+▼ Font: "SEGUIEMJ.ttf, 16px" Set as default
+16.00 px, 193 glyphs, 1 file(s)
+▶ Atlas texture (512x128 pixels) 
+
+window scale
+1.00
+global scale
+1.00
+
+▼ Dear ImGui Demo
+▼ Widgets dear imgui says hello. (01/82 WIP)
+ Help
+ Configuration
+ Window options
+ Widgets
+ Layout & Scrolling
+ Popups & Modal windows
+ Tables & Columns
+ Filtering
+ Inputs, Navigation & Focus

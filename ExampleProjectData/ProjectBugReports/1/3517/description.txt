@@ -1,0 +1,21 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.77 WIP (17601)
+Branch: docking
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_opengl3.cpp + imgui_impl_sdl.cpp
+Compiler: VS 2019
+Operating System: Windows 10
+
+**My Issue/Question:**
+
+Choosing a color (e.g. white) dragging the circle on the ColorPicker widget, the red float value is correct (1.0f) but the green and blue variables have a value of almost 1, but not exactly (0.999989986f).
+
+**Screenshots/Video**
+
+![image](https://user-images.githubusercontent.com/36189169/95655075-221d0000-0b05-11eb-8961-775025b9f7a4.png)
+![image](https://user-images.githubusercontent.com/36189169/95655096-3c56de00-0b05-11eb-96ff-4ae37874e30d.png)
+
+Thanks in advance!

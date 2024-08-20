@@ -1,0 +1,96 @@
+
+
+
+**Version/Branch of Dear ImGui:**
+
+Version: 1.70 WIP (16990)
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_glfw.cpp + imgui_impl_opengl3.cpp
+Compiler: clang-1000.11.45.2
+Operating System: macOS 10.14
+
+**My Issue/Question:**
+
+I am plotting data that sometimes has NaN values in it, sometimes this causes the PlotLines() to not render correctly. I believe I have traced it down to ImMin/ImMax not handling NaNs correctly.
+
+**Screenshots/Video**
+
+Current behavior:
+<img width="188" alt="Screen Shot 2019-04-10 at 4 34 44 PM" src="https://user-images.githubusercontent.com/778194/55920681-942e2500-5bae-11e9-9a08-557dd77faf93.png">
+
+Expected behavior:
+<img width="262" alt="Screen Shot 2019-04-10 at 4 34 19 PM" src="https://user-images.githubusercontent.com/778194/55920705-9db78d00-5bae-11e9-8245-014af71fa1a3.png">
+
+
+**Standalone, minimal, complete and verifiable example:** 
+This example code produces a blank graph with current master
+```
+        ImGui::Begin("NaN Bug");
+        float values[6] = {
+            0.0f,
+            1.0f,
+            0.0f/0.0f,
+            4.0f,
+            5.0f,
+            0.0f/0.0f};
+        ImGui::PlotLines("Plot", values, 6);
+        ImGui::End();
+```
+This code shows the ImMin handling NaNs differently than fmin if the NaN is on the right hand side.
+
+```
+#include <stdio.h>
+#include <math.h>
+#include "imgui.h"
+#include "imgui_internal.h"
+int main() {
+    printf("fmin  %f %f\n", fmin(0.0f/0.0f, 5.0f), fmin(5.0f, 0.0f/0.0f ));
+    printf("ImMin %f %f\n", ImMin(0.0f/0.0f, 5.0f), ImMin(5.0f, 0.0f/0.0f));
+    return 0;
+}
+```
+```
+fmin  5.000000 5.000000
+ImMin 5.000000 nan
+```
+**Possible fix:**
+An immediate fix is to swap the argument order when calling ImMin/ImMax:
+```
+diff --git a/imgui_widgets.cpp b/imgui_widgets.cpp
+index ad3126cd..d0f68f09 100644
+--- a/imgui_widgets.cpp
++++ b/imgui_widgets.cpp
+@@ -5521,8 +5521,8 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
+         for (int i = 0; i < values_count; i++)
+         {
+             const float v = values_getter(data, i);
+-            v_min = ImMin(v_min, v);
+-            v_max = ImMax(v_max, v);
++            v_min = ImMin(v, v_min);
++            v_max = ImMax(v, v_max);
+         }
+         if (scale_min == FLT_MAX)
+             scale_min = v_min;
+```
+Another fix could be to not rely on ImMin/ImMax for plot scaling:
+```
+diff --git a/imgui_widgets.cpp b/imgui_widgets.cpp
+index ad3126cd..e18f900a 100644
+--- a/imgui_widgets.cpp
++++ b/imgui_widgets.cpp
+@@ -5521,8 +5521,8 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
+         for (int i = 0; i < values_count; i++)
+         {
+             const float v = values_getter(data, i);
+-            v_min = ImMin(v_min, v);
+-            v_max = ImMax(v_max, v);
++            if (v < v_min) v_min = v;
++            if (v > v_max) v_max = v;
+         }
+         if (scale_min == FLT_MAX)
+             scale_min = v_min;
+```
+However it seems like the "correct" fix is to have ImMin/ImMax behave the same as fmin and max. I'm not sure how to do that in a portable way though.

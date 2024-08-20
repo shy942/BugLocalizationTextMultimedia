@@ -1,0 +1,1 @@
+DragBehaviorT doesn't clamp by main value with default max.

@@ -1,0 +1,7 @@
+Spindle
+0
+1 RPM
+N/A
+current     0.52 A
+voltage   112.70 V
+cos θ       0.72

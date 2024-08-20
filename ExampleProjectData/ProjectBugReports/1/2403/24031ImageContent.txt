@@ -1,0 +1,2 @@
+Application average 19.617 ms/frame (50.2 
+Nguyễn Đ?ng D??ng

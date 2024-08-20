@@ -1,0 +1,59 @@
+```
+Dear ImGui 1.72 WIP (17101)
+--------------------------------
+sizeof(size_t): 4, sizeof(ImDrawIdx): 2, sizeof(ImDrawVert): 20
+define: __cplusplus=199711
+define: _WIN32
+define: _MSC_VER=1921
+--------------------------------
+io.BackendPlatformName: imgui_impl_glfw
+io.BackendRendererName: imgui_impl_opengl3
+io.ConfigFlags: 0x00000000
+io.ConfigInputTextCursorBlink
+io.ConfigWindowsResizeFromEdges
+io.BackendFlags: 0x0000000E
+ HasMouseCursors
+ HasSetMousePos
+ RendererHasVtxOffset
+--------------------------------
+io.Fonts: 1 fonts, Flags: 0x00000000, TexSize: 512,64
+io.DisplaySize: 1280.00,720.00
+io.DisplayFramebufferScale: 1.00,1.00
+--------------------------------
+style.WindowPadding: 8.00,8.00
+style.WindowBorderSize: 1.00
+style.FramePadding: 4.00,3.00
+style.FrameRounding: 0.00
+style.FrameBorderSize: 0.00
+style.ItemSpacing: 8.00,4.00
+style.ItemInnerSpacing: 4.00,4.00
+```
+
+**Version/Branch of Dear ImGui:**
+
+Branch: master@b443bc0a64d5e22d445d2c9cb52f7f39da6b98c9
+
+**Back-end/Renderer/Compiler/OS**
+
+Affects all back-ends as far as I'm aware.
+
+**My Issue/Question:**
+
+ShowDemoWindowColumns() triggers assert in `imgui_widgets.cpp`:
+> Assertion failed: columns != 0, file imgui\imgui_widgets.cpp, line 7183
+
+Call stack:
+    example_glfw_opengl3.exe!ImGui::GetColumnWidth(int column_index) Line 7183
+    example_glfw_opengl3.exe!ShowDemoWindowColumns() Line 2607
+    example_glfw_opengl3.exe!ImGui::ShowDemoWindow(bool * p_open) Line 408
+    example_glfw_opengl3.exe!main(int __formal, char * * __formal) Line 137
+
+**Screenshots/Video**
+
+![image](https://user-images.githubusercontent.com/707367/61587431-39a64c80-ab3f-11e9-8492-ea77e6f4b684.png)
+
+**Standalone, minimal, complete and verifiable example:**
+
+Run any of the demo apps on latest master. https://github.com/ocornut/imgui/commit/b443bc0a64d5e22d445d2c9cb52f7f39da6b98c9 as of writing.
+
+Drag the `4 columns` control (see screenshot) left with mouse, beyond `2 columns`. `2 columns` works fine, but as soon as you go beyond the app crashes with the assert mentioned above.

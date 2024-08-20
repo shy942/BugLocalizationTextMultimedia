@@ -1,0 +1,104 @@
+
+```
+Dear ImGui 1.78 WIP (17703)
+--------------------------------
+sizeof(size_t): 8, sizeof(ImDrawIdx): 4, sizeof(ImDrawVert): 20
+define: __cplusplus=201703
+define: __APPLE__
+define: __GNUC__=4
+define: __clang_version__=11.0.3 (clang-1103.0.32.62)
+--------------------------------
+io.BackendPlatformName: imgui_impl_sdl
+io.BackendRendererName: imgui_impl_opengl3
+io.ConfigFlags: 0x00000000
+io.ConfigMacOSXBehaviors
+io.ConfigInputTextCursorBlink
+io.ConfigWindowsResizeFromEdges
+io.ConfigWindowsMemoryCompactTimer = 60.0f
+io.BackendFlags: 0x0000000E
+ HasMouseCursors
+ HasSetMousePos
+ RendererHasVtxOffset
+--------------------------------
+io.Fonts: 5 fonts, Flags: 0x00000000, TexSize: 2048,4096
+io.DisplaySize: 1792.00,1042.00
+io.DisplayFramebufferScale: 2.00,2.00
+--------------------------------
+style.WindowPadding: 8.00,8.00
+style.WindowBorderSize: 1.00
+style.FramePadding: 4.00,3.00
+style.FrameRounding: 0.00
+style.FrameBorderSize: 0.00
+style.ItemSpacing: 8.00,4.00
+style.ItemInnerSpacing: 4.00,4.00
+```
+
+
+**Version/Branch of Dear ImGui:**
+
+Version: 1.78 WIP
+Branch: master
+
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_sdl.cpp + imgui_impl_opengl3.cpp _(or specify if using a custom engine/back-end)_
+Compiler: clang 9
+Operating System: OSX
+
+**My Issue/Question:**
+
+Calling AddPolyline with a line with sharp corners causes the line segments adjacent to the corners to be nearly invisible. See the first screenshot below of graph drawn with 
+```
+  GetWindowDrawList()->AddPolyline(&path[0], path.size(), IM_COL32(0xff, 0x5b, 0xfc, 0xff), false, 2.0f);
+```
+
+The culprit seems to be the algorithm for IM_FIXNORMAL2F as called in ImDrawList::AddPolyline. I'm in the case with `use_texture=true`, `thick_line=true`, `closed=false`, `fractional_thickness=0.0`
+
+When there is a sharp corner, averaging 2 successive normals produces results with magnitude much less than 1. IM_FIXNORMAL2F doesn't scale the normal up by more than a factor of 2, so the end result is a vanishingly thin line.
+
+**Screenshots/Video**
+
+The top squiggle shows the current behavior. Right now, I'm working around it by adding some duplicate points when there's a sharp corner, as shown in the bottom squiggle.
+
+This comes up for real a lot in my application which involves graphing time series which are often jagged.
+
+<img width="245" alt="image" src="https://user-images.githubusercontent.com/219508/88611483-f928bb00-d03d-11ea-8042-5d006b5ecac8.png">
+
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+```
+// Here's some code anyone can copy and paste to reproduce your issue
+      ImGui::Begin("Example Bug");
+      float x=0, y=0;
+      if (1) {
+        // The version I want to work
+        vector<ImVec2> path;
+        path.emplace_back(x+0, y+100);
+        path.emplace_back(x+98, y+100);
+        path.emplace_back(x+99, y+110);
+        path.emplace_back(x+100, y+50);
+        path.emplace_back(x+110, y+100);
+        path.emplace_back(x+120, y+100);
+        path.emplace_back(x+200, y+100);
+        GetWindowDrawList()->AddPolyline(&path[0], path.size(), IM_COL32(0xff, 0x5b, 0xfc, 0xff), false, 2.0f);
+        y += 200;
+      }
+      if (1) {
+        // The version with dummy points inserted
+        vector<ImVec2> path;
+        path.emplace_back(x+0, y+100);
+        path.emplace_back(x+98, y+100);
+        path.emplace_back(x+99, y+110);
+        path.emplace_back(x+99, y+110);
+        path.emplace_back(x+100, y+50);
+        path.emplace_back(x+100, y+50);
+        path.emplace_back(x+110, y+100);
+        path.emplace_back(x+120, y+100);
+        path.emplace_back(x+200, y+100);
+        GetWindowDrawList()->AddPolyline(&path[0], path.size(), IM_COL32(0xff, 0x5b, 0xfc, 0xff), false, 2.0f);
+        y += 200;
+      }  
+      ImGui::End();
+```
+

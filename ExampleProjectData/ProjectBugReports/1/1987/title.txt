@@ -1,0 +1,1 @@
+Program Crashes Due To Incorrect Initialisation?

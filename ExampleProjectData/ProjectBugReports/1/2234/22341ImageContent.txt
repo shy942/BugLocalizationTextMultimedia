@@ -1,0 +1,8 @@
+▼ ImFontAtlas::AddFontFromFileTTF                                                +8               +65,305,368
+   ▶ ImFontAtlas::AddFontFromMemoryTTF                                           +5                    +1,404
+      ▶ ImFileLoadToMemory                                                       +3               +65,303,964
+▼ ImGui::MemAlloc                                                                +3               +65,303,964
+   ▶ MallocWrapper                                                               +3               +65,303,964
+      ▶ malloc                                                                   +3               +65,303,964
+         ▶ _malloc_dbg                                                           +3               +65,303,964
+            ▶ heap_alloc_dbg                                                     +3               +65,303,964

@@ -1,0 +1,8 @@
+Hi,
+I've spotted that changing the frame padding value also offsets the inner text (+/-) in the controls buttons of the InputFloat/InputInt widgets
+
+![frame padding](https://user-images.githubusercontent.com/28775797/53053033-96bea900-34a0-11e9-8704-f8451933b7a9.jpg)
+(picture from the samples, last revision, using a frame padding of 13. With larger values the text isn't even visible)
+
+Workaround is to push a zero padding before creating an InputFloat control.
+Thanks.

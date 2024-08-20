@@ -1,0 +1,19 @@
+[nexus@nexus example_emscripten_wgpu]$ make serve
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o main.o main.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui.o ../../../imgui.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_demo.o ../../../imgui_demo.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_draw.o ../../../imgui_draw.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_tables.o ../../../imgui_tables.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_widgets.o ../../../imgui_widgets.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_impl_glfw.o ../backends/imgui_impl_glfw.cpp
+em++ -DIMGUI_DISABLE_FILE_FUNCTIONS -I../../.. -I../backends -Wall -Wformat -Os -s DISABLE_EXCEPTION_CATCHING=1 -c -o imgui_impl_wgpu.o ../backends/imgui_impl_wgpu.cpp
+em++ -o web/index.js main.o imgui.o imgui_demo.o imgui_draw.o imgui_tables.o imgui_widgets.o imgui_impl_glfw.o imgui_impl_wgpu.o -s USE_GLFW=3 -s USE_WEBGPU=1 -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -s ASSERTIONS=1 -s NO_FILESYSTEM=1 -s DISABLE_EXCEPTION_CATCHING=1
+Build complete for web/index.js
+python3 -m http.server -d web
+Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+192.168.1.4 - - [13/Oct/2021 23:51:32] "GET / HTTP/1.1" 200 -
+192.168.1.4 - - [13/Oct/2021 23:52:03] "GET / HTTP/1.1" 200 -
+192.168.1.4 - - [13/Oct/2021 23:52:03] code 404, message File not found
+192.168.1.4 - - [13/Oct/2021 23:52:03] "GET /favicon.ico HTTP/1.1" 404 -
+^C
+Keyboard interrupt received, exiting.

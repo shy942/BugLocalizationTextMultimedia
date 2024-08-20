@@ -1,0 +1,13 @@
+```ImGui::Text("%d", ImGui::GetColumnIndex());
+ImGui::Text("%f", ImGui::GetColumnWidth());
+ImGui::Text("%f", ImGui::GetContentRegionAvailWidth());
+ImGui::Text("%f", ImGui::GetContentRegionMax().x);
+ImGui::Text("%f", ImGui::GetColumnOffset());
+```
+
+I've inserted this code to imgui_demo.cpp (line 1357). Result:
+![nz8w6ek](https://user-images.githubusercontent.com/5224397/28994374-673e9370-79d5-11e7-9143-9f1925d68c9d.png)
+
+
+First column always shows bigger ImGui::GetContentRegionAvailWidth(). Why and how to fix?
+

@@ -1,0 +1,39 @@
+g++ -I../ -I../../ -g -Wall -Wformat -I../libs/gl3w -DIMGUI_IMPL_OPENGL_LOADER_GL3W `pkg-config --cflags glfw3` -c -o main.o main.cpp
+g++ -I../ -I../../ -g -Wall -Wformat -I../libs/gl3w -DIMGUI_IMPL_OPENGL_LOADER_GL3W `pkg-config --cflags glfw3` -c -o imgui_impl_glfw.o ../imgui_impl_glfw.cpp
+
+../imgui_impl_glfw.cpp:180:75: error: ‘GLFW_RESIZE_ALL_CURSOR’ was not declared in this scope   
+    MouseCursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_RESIZE_ALL_CURSOR);   
+                                                                          ^~~~~~~~~~~~~~~~~~~~~
+
+../imgui_impl_glfw.cpp:180:75: note: suggested alternative: ‘GLFW_HRESIZE_CURSOR’   
+    MouseCursors[ImGuiMouseCursor_ResizeAll] = glfwCreateStandardCursor(GLFW_RESIZE_ALL_CURSOR);   
+                                                                          ^~~~~~~~~~~~~~~~~~~~~
+                                                                          GLFW_HRESIZE_CURSOR  
+
+../imgui_impl_glfw.cpp:181:76: error: ‘GLFW_RESIZE_NESW_CURSOR’ was not declared in this scope   
+    MouseCursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_RESIZE_NESW_CURSOR);   
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+
+../imgui_impl_glfw.cpp:181:76: note: suggested alternative: ‘GLFW_HRESIZE_CURSOR’   
+    MouseCursors[ImGuiMouseCursor_ResizeNESW] = glfwCreateStandardCursor(GLFW_RESIZE_NESW_CURSOR);   
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+                                                                            GLFW_HRESIZE_CURSOR  
+
+../imgui_impl_glfw.cpp:182:76: error: ‘GLFW_RESIZE_NWSE_CURSOR’ was not declared in this scope   
+    MouseCursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_RESIZE_NWSE_CURSOR);   
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+
+../imgui_impl_glfw.cpp:182:76: note: suggested alternative: ‘GLFW_HRESIZE_CURSOR’   
+    MouseCursors[ImGuiMouseCursor_ResizeNWSE] = glfwCreateStandardCursor(GLFW_RESIZE_NWSE_CURSOR);   
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+                                                                            GLFW_HRESIZE_CURSOR  
+
+../imgui_impl_glfw.cpp:183:76: error: ‘GLFW_NOT_ALLOWED_CURSOR’ was not declared in this scope
+    MouseCursors[ImGuiMouseCursor_NotAllowed] = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+
+../imgui_impl_glfw.cpp:183:76: note: suggested alternative: ‘GLFW_ARROW_CURSOR’
+    MouseCursors[ImGuiMouseCursor_NotAllowed] = glfwCreateStandardCursor(GLFW_NOT_ALLOWED_CURSOR);
+                                                                            ^~~~~~~~~~~~~~~~~~~~~~
+                                                                            GLFW_ARROW_CURSOR     
+make: *** [Makefile:83: imgui_impl_glfw.o] Error 1

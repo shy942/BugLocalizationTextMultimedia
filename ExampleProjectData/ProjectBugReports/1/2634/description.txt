@@ -1,0 +1,8 @@
+I would like to ask, if it has a sense to add a possiblity to not render a collapse button in a title bar, while still allowing to collapse a window by double-click on title bar. 
+From my perspective, the interface that I'm designing would be cleaner without the button (see the screenshot)
+
+![obraz](https://user-images.githubusercontent.com/3495693/59699992-d1d4ad00-91f2-11e9-9b4c-660b395b6ab4.png)
+
+The simplest way would be to add an additional flag to `ImGuiWindowFlags_`, however, most of the bits are already used. The other approach would be to extend the `ImGuiStyle` struct by an additional field.
+
+What do you think about the idea? If you agree, I could prepare PR.

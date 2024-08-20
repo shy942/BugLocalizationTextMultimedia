@@ -1,0 +1,26 @@
+Button                   Contents
+3                        Columns
+ [x]  ImGuiTableFlags_BordersInnerH
+ [x]  ImGuiTableFlags_BordersOuterH
+ [ ]  ImGuiTableFlags_BordersInnerV
+ [ ]  ImGuiTableFlags_BordersOuterV
+ [ ]  ImGuiTableFlags_ScrollX
+ [x]  ImGuiTableFlags_ScrollY
+ [ ]  ImGuiTableFlags_SizingPolicyStretchX (?)
+ [x]  ImGuiTableFlags_SizingPolicyFixedX (?)
+ [ ]  ImGuiTableFlags_PreciseStretchWidths
+ [ ]  ImGuiTableFlags_Resizable
+ [ ]  ImGuiTableFlags_NoClip
+         
+Hello 0,0  |  Hello 0,1  |  Hello 0,2
+Hello 1,0  |  Hello 1,1  |  Hello 1,2
+Hello 2,0  |  Hello 2,1  |  Hello 2,2
+Hello 3,0  |  Hello 3,1  |  Hello 3,2
+Hello 4,0  |  Hello 4,1  |  Hello 4,2
+Hello 5,0  |  Hello 5,1  |  Hello 5,2
+Hello 6,0  |  Hello 6,1  |  Hello 6,2
+Hello 7,0  |  Hello 7,1  |  Hello 7,2
+Hello 8,0  |  Hello 8,1  |  Hello 8,2
+Hello 9,0  |  Hello 9,1  |  Hello 9,2
+
+ ▸ Compact table

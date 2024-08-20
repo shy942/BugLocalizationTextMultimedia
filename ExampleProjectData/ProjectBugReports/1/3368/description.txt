@@ -1,0 +1,10 @@
+You should be able to disable mouse inputs for windows, but not their contents. 
+
+I'm using an window with no background, non resizeable, can't move it, no title, etc for my UI, like so:
+![image](https://user-images.githubusercontent.com/47158642/88760074-3b372700-d13a-11ea-96c1-81874693dafd.png)
+
+The issue is that the window captures mouse input in the space to the right of the "Brush Size" text, since there's technically an invisible background there. Here's what it looks like with the background showing:
+![image](https://user-images.githubusercontent.com/47158642/88760149-63268a80-d13a-11ea-9a0c-2f41b1c8c5ac.png)
+
+Using the no mouse input flag fixes this, but also makes it so that you can't interact with any of the buttons or widgets either. I want a mode like no mouse input, but only applying to the window itself, and not it's contents.
+

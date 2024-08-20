@@ -1,0 +1,1 @@
+CollapsingHeader is not visible when not opened

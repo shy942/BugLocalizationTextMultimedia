@@ -1,0 +1,1 @@
+BeginChild() make its area loose the ability to move a window

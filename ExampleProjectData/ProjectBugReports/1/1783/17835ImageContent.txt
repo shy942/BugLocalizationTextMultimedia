@@ -1,0 +1,18 @@
+ImGui::Begin("Test Window", NULL, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_ShowBorders);
+{
+    ImGui::Columns(2, NULL, false);
+    {
+        {
+            ImGui::BeginChild("Test Child", ImVec2(0, 0), true, 0);
+            {
+                ImGui::ListBoxHeader("Test Header");
+                ImGui::ListBoxFooter();
+                ImGui::EndChild();
+            }
+        }
+        ImGui::NextColumn();
+        {
+        }
+    }
+    ImGui::End();
+}

@@ -1,0 +1,98 @@
+Dear ImGui GLFW+OpenGL3 example
+▼ Hello, world!
+    This is some useful text.
+    ✔ Demo Window
+    ☐ Another Window
+    0.000                         float
+    R:115     G:140     B:153     clear color
+    Button                counter = 0
+    Application average 17.355 ms/frame (57.6 FPS)
+
+▸ Dear ImGui Demo
+    Menu  Examples  Help
+    dear imgui says hello. (1.72 WIP)
+    ► Help
+    ► Configuration
+    ► Window options
+    ► Widgets
+    ► Layout
+    ► Popups & Modal windows
+    ▼ Columns
+        Disable tree indentation (?)
+        ▸ Basic
+        ▾ Borders
+            4 columns    ✔ horizontal   ✔ vertical
+            aaa
+                Width 127.75
+                Avail 111.75
+                Offset 21.00
+                Long text that is
+                Button
+            bbb
+                Width 127.75
+                Avail 112.50
+                Offset 148.75
+                Long text that is
+                Button
+            ccc
+                Width 127.75
+                Avail 112.25
+                Offset 276.50
+                Long text that is
+                Button
+            ddd
+                Width 127.75
+                Avail 112.00
+                Offset 404.25
+                Long text that is
+                Button
+            eee
+                Width 127.75
+                Avail 111.75
+                Offset 21.00
+                Long text that is
+                Button
+            fff
+                Width 127.75
+                Avail 112.50
+                Offset 148.75
+                Long text that is
+                Button
+            ggg
+                Width 127.75
+                Avail 112.25
+                Offset 276.50
+                Long text that is
+                Button
+            hhh
+                Width 127.75
+                Avail 112.00
+                Offset 404.25
+                Long text that is
+                Button
+            iii
+                Width 127.75
+                Avail 111.75
+                Offset 21.00
+                Long text that is
+                Button
+            jjj
+                Width 127.75
+                Avail 112.50
+                Offset 148.75
+                Long text that is
+                Button
+            kkk
+                Width 127.75
+                Avail 112.25
+                Offset 276.50
+                Long text that is
+                Button
+            lll
+                Width 127.75
+                Avail 112.00
+                Offset 404.25
+                Long text that is
+                Button
+        ▸ Mixed items
+        ▸ Word-wrapping

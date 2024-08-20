@@ -1,0 +1,25 @@
+ImGui DirectX11 Example
+
+▼ Debug
+Hello, world!
+      0.000                    float
+R:115          G:140           B:153 clear color
+☑ Demo Window
+☐ Another Window
+Button                             counter = 0
+Application average 16.671 ms/frame (60.0 FPS)
+
+
+▼ ImGui Demo
+    Menu   Examples   Help
+dear imgui says hello. (1.61)
+▶ Help
+▶ Window options
+▶ Widgets
+▶ Layout
+▶ Popups & Modal windows
+▶ Columns
+▶ Filtering
+▶ Inputs, Navigation & Focus
+BrokenComboBoxes
+  Trace   ▼           Logging Leve

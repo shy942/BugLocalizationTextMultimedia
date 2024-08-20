@@ -1,0 +1,29 @@
+I am using a "+"  button after a reorderable tab bar to add a new tab.
+![image](https://user-images.githubusercontent.com/24891831/84030419-effb6600-a98b-11ea-896c-24bf7bb6001e.png)
+
+if I move the last tab the button's position moves to after the moved tab instead of after the tab bar
+![image](https://user-images.githubusercontent.com/24891831/84030575-33ee6b00-a98c-11ea-9f04-8a81c16ff0f7.png)
+
+I'm using ImGui 1.75 included with https://github.com/jvcleave/ofxImGui
+
+Here's the code outline - a tab is class which has a name variable and I keep the tabs in a C++ vector
+`	
+
+
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable;
+    if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags)) {
+        for (auto tab : tabs) {
+            string name = tab->name;
+            if (ImGui::BeginTabItem(name.c_str())) { 
+                // switch to the newly selected tab
+                ImGui::EndTabItem();
+            }
+        }
+        ImGui::EndTabBar();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("+")) {
+        // create the new tab and push_back
+    }
+`
+

@@ -1,0 +1,36 @@
+  
+**Version/Branch of Dear ImGui:**
+
+Version: 1.69
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_glfw.cpp + imgui_impl_opengl3.cpp 
+Operating System: Windows
+
+**My Issue/Question:**
+
+`ImGui::Selectable` suppose to support aligning the label. If  `ImGuiStyleVar_SelectableTextAlign` style is set to `ImVec2(0.5f, 0.5f)`, the text should be centered. Unfortunately, the style value is "indirectly" ignored.
+
+I think, that `bb_inner` in the `ImGui::Selectable` function is wrongly computed, as it stores the size of text, not the widget. In the result, `RenderTextClipped` has no room to operate.
+If I replace `bb_inner` in the call with `bb`, it works as expected. 
+
+**Screenshots/Video**
+
+That it looks now:
+![obraz](https://user-images.githubusercontent.com/3495693/58732269-4df88380-83f1-11e9-9765-bdef97333408.png)
+
+Expected result:
+![obraz](https://user-images.githubusercontent.com/3495693/58732336-8009e580-83f1-11e9-83bf-2e39085f0f03.png)
+
+
+**Standalone, minimal, complete and verifiable example:** 
+```
+        ImGui::Begin("Test");
+        static bool test = false;
+        ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
+        ImGui::Selectable("Test", &test);
+        ImGui::PopStyleVar();
+        ImGui::End();
+```
+

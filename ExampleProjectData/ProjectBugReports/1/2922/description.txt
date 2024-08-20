@@ -1,0 +1,8 @@
+Linux x86_64
+
+this error occurs when the glfw/opengl3 build
+
+here is output from the glfw/opengl3 example when using provided makefile:
+
+![Untitled](https://user-images.githubusercontent.com/40045935/70325392-1bd83c00-17ef-11ea-815f-a2e2d99b459e.png)
+

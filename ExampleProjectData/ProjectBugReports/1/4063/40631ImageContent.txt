@@ -1,0 +1,47 @@
+Normal Rendering
+Position : 0.00 0.00 0.00
+Rotation : 0.00
+zoom : 1.48
+height : 1.00
+MousePosition : 3.53 0.00 -47.35
+BrushState : 1
+LayerState : 1
+Object : Character and Grid : sieg
+
+❯ User inputs Demo
+    New    Examples    Tools
+    clear input says hello, 0.80
+    ❯ Help
+    ❯ Configuration
+    ❯ Window options
+    ❯ Widgets
+        ❯ Basic
+        ❯ Trees
+        ❯ Collapsing Headers
+        ❯ Columns
+        ❯ Text
+            ❯ Colorful Text
+            ❯ Word Wrapping
+            ❯ UTF-8 Text
+        ❯ Images
+        ❯ Combo
+        ❯ List boxes
+        ❯ Selectables
+        ❯ Text input
+        ❯ Tabs
+        ❯ Plot Widgets
+        ❯ Color/Picker Widgets
+        ❯ Range Widgets
+        ❯ Data Widgets
+        ❯ Multi-component Widgets
+        ❯ Vertical Sliders
+        ❯ Drag and Drop
+        ❯ Logging status (Edited/Active/Focused/Hovered etc.)
+        ❯ Layout & Scrolling
+        ❯ Popups & Modal windows
+        ❯ Tables & Columns
+        ❯ Filtering
+        ❯ Inputs, Navigation & Focus
+    Maps/Demo/Shared/Demo.ObjectPalette.xml
+    Maps/Demo/Shared/Demo.BillboardPalette.xml
+    Maps/Demo/Shared/Demo.TilePalette.xml

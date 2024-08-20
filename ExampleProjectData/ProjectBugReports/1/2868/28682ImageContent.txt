@@ -1,0 +1,8 @@
+713 // Average normals
+714 float dm_x := (temp_normals[i1].x + temp_normals[i2].x) * 0.5f;
+715 float dm_y := (temp_normals[i1].y + temp_normals[i2].y) * 0.5f;
+716 IM_FIXNORMAL2F(dm_x, dm_y);
+717 float dm_out_x := dm_x * (half_inner_thickness + AA_SIZE);
+718 float dm_out_y := dm_y * (half_inner_thickness + AA_SIZE);
+719 float dm_in_x := dm_x * half_inner_thickness;
+720 float dm_in_y := dm_y * half_inner_thickness;

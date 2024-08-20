@@ -1,0 +1,6 @@
+Hello ocornut. I just read the changelog and found that the number of columns have been limited between `1-64`. Just wanted to know, Is there any other alternative for it? Are you planning to remove columns API from the future versions or something, what's the future plan?
+
+ Since my file dialog uses a column-based design, as shown in the screenshot,instead of pure vertical list based (purely aesthetical I guess) It's entirely possible to exceed 64 columns depending on the amount of files and directories present in a specific folder and the size of the dialog itself. Thanks.
+
+![test3](https://user-images.githubusercontent.com/40718428/75103289-a83e1200-561a-11ea-899c-ac62fc66df1e.png)
+

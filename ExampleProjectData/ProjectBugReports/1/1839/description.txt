@@ -1,0 +1,19 @@
+Hey all !
+I'm fairly new to imgui so please be gentle :)
+I've been tasked to make some software for my school (yes, I am a school student) and I'm running into some problems with the library.
+
+**Background:**
+code is messy in places. i thought i would get it to work first and refine it later.
+variable inventory is a vector.
+
+![1](https://user-images.githubusercontent.com/35698009/40580388-ba29c29a-615a-11e8-90e8-20e8bebc2743.png)
+
+
+The above screenshot is what im trying to do. However, on testing, only the buttons of the first row seemed to work. the buttons of the other rows... just didn't respond to clicks.
+
+Code:
+![2](https://user-images.githubusercontent.com/35698009/40580401-fe403752-615a-11e8-9b58-0d75559df51e.png)
+
+Was referring to the code in the demo. Didn't read through everything in detail. just saw the code from the demo and tried to get it to work.
+
+Help is greatly appreciated :)

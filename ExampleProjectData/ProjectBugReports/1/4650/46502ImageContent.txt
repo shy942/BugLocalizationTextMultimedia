@@ -1,0 +1,32 @@
+commit 13cdf2ff0e554d2097841e742a26180440c69173 (HEAD -> master, origin/master, origin/HEAD)
+Author: Rokas Kupstys <rokups@gmail.com>
+Date:   Tue Oct 12 18:49:24 2021 +0300
+
+    CI: Add MinGW DLL builds,
+
+commit be03b8ff93ab9c9f9524af056fc0fc73ba26ff66
+Author: Rokas Kupstys <rokups@zoho.com>
+Date:   Tue Oct 12 17:23:39 2021 +0300
+
+    Misc: Fix build with MinGW when using IMGUI_API.
+
+commit 55d35d8387c15bf0cfd71861d67af8cfbda7456 (tag: v1.85)
+Author: ocornut <omarcornut@gmail.com>
+Date:   Mon Oct 11 19:03:37 2021 +0200
+
+    Version 1.85
+
+commit 75c54e63844d262b1005865eba370ad487808b1f
+Author: ocornut <omarcornut@gmail.com>
+Date:   Mon Oct 11 14:40:42 2021 +0200
+
+    Nav: Fixed vertical scoring offset when wrapping on Y in a decorated window.
+
+commit ba5c105c0194e667f80194c7bc8f0f5c78eaa8a9
+Author: ocornut <omarcornut@gmail.com>
+Date:   Mon Oct 11 11:37:31 2021 +0200
+
+    Menus: Fixed an assertion happening in some situations when closing nested menus (broken in 1.83). (#4640)
+    
+    Broken since 936f5322
+    Weirdly chain-reaction caused by the fact following #4640 repro, the SourceWindow assignment in OpenPopupEx()

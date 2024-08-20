@@ -1,0 +1,30 @@
+References
+External Dependencies
+  gl3w
+    gl3w.c
+  glfw
+    CMakeLists.txt
+    context.c
+    egl_context.c
+    init.c
+    input.c
+    monitor.c
+    osmesa_context.c
+    wgl_context.c
+    win32_init.c
+    win32_joystick.c
+    win32_monitor.c
+    win32_thread.c
+    win32_time.c
+    win32_window.c
+    window.c
+    xkb_unicode.c
+  ImGui
+    imgui.cpp
+    imgui_demo.cpp
+    imgui_draw.cpp
+    imgui_impl_glfw.cpp
+    imgui_impl_opengl3.cpp
+    imgui_impl_win32.cpp
+
+entrypoint.cpp

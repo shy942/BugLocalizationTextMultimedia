@@ -1,0 +1,10 @@
+AssaultCube fatal error
+
+Win32 Exception: 0xc0000005 [0x44]
+
+ImGui::Begin - imgui.cpp [6445]
+ImGui::ShowDemoWindow - imgui_demo.cpp [200]
+hwglSwapBuffers - dllmain.cpp [81]
+0
+
+                                                OK

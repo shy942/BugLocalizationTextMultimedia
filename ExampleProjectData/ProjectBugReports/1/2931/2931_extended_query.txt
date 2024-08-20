@@ -1,0 +1,1 @@
+drag behavior clamp main default max version branch dear gui version wip branch master issu question drag behavior drag widget clamp min max case clamp min manipul object size possibl improv behavior case screenshot video standalon minim complet verifi gui imgui drag float issu static float size gui drag float size size gui imgui drag float issu size

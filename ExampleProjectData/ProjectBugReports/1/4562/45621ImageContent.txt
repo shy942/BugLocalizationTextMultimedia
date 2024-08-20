@@ -1,0 +1,5 @@
+    // Unload XInput library
+#ifndef IMGUI_IMPL_WIN32_DISABLE_GAMEPAD
+    if (bd->XInputDLL)
+        ::FreeLibrary(bd->XInputDLL);
+#endif // IMGUI_IMPL_WIN32_DISABLE_GAMEPAD

@@ -1,0 +1,25 @@
+**Version/Branch of Dear ImGui:**
+Version: 1.74
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+Back-ends: imgui_impl_dx12.cpp + imgui_impl_win32.cpp
+Compiler: MSVC 2015 VC++ , platform toolset 140
+Operating System: win10, x64
+
+**My Issue/Question:**
+As far as I understand, SetNextWindowBgAlpha(1.0) works incorrectly. 
+It looks like this (lower window is foreground with SetNextWindowBgAlpha(1.0)
+![image](https://user-images.githubusercontent.com/3823155/73451367-82558280-4378-11ea-980a-de184fe09751.png)
+
+The correct one should be like this:
+![image](https://user-images.githubusercontent.com/3823155/73451415-9b5e3380-4378-11ea-84fa-bcadbaab8454.png)
+
+Imgui code uses value from GetColorU32(GetWindowBgColorIdxFromFlags(flags)) instead of 1.0 that come from SetNextWindowBgAlpha. So, the 'alpha' part of the RenderWindowDecorations() is probably wrong:
+
+Original code (ImGui 1.74)
+![image](https://user-images.githubusercontent.com/3823155/73450043-9481f180-4375-11ea-962a-f379b28020f5.png)
+Proposed fix:
+![image](https://user-images.githubusercontent.com/3823155/73450076-a794c180-4375-11ea-97f6-6d35675d7d5d.png)
+
+

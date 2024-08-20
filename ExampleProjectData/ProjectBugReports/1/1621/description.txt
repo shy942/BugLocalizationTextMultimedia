@@ -1,0 +1,27 @@
+Using imgui 1.50 with love.imgui on Windows 10 and Ubuntu 17.10.
+
+When drawing a graph with `ImGui::PlotLines` where all values are the same, no lines are visible.
+
+In the pictures, the top graph adds some extra values so that the graph is always visible (since it's common to remain at 60 FPS for extended periods of time). The bottom graph also does this, but it appends zeros, so when it's all zeros, nothing is visible.
+
+Example of data where lines _are_ drawn:
+![data](https://user-images.githubusercontent.com/1900613/36291304-0594c868-127f-11e8-8886-329873e2d40e.png)
+
+Example of data where no lines are drawn for the file access graph.
+![no_data](https://user-images.githubusercontent.com/1900613/36291309-080d9ee4-127f-11e8-8b7f-c31d1e52344a.png)
+
+Example Lua code:
+```lua
+local values = {}
+for i = 1, 120 do
+    values[i] = 0
+end
+
+imgui.PlotLines("graph", values, #values)
+```
+
+Untested C++ code:
+```c++
+float lines[120];
+ImGui::PlotLines("graph", lines, 120);
+```

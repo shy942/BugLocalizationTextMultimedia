@@ -1,0 +1,44 @@
+Buildtime (7)  Runtime
+
+imgui 7 issues
+ > Dead store
+ > Logic error
+      > Access to field 'align' results in a
+         dereference of a null pointer (loaded
+         from variable 'c') (within a call to 'st...
+         imgui_draw.cpp
+      > Access to field 'Flags' results in a
+         dereference of a null pointer (loaded
+         from field 'RootWindowForNav')
+         imgui.cpp
+          > Value assigned to field
+             'ParentWindow'
+          > Assuming 'parent_window' is null
+          > Entering loop body
+          > Null pointer value stored to field
+             'RootWindowForNav'
+          > Looping back to the head of
+            the loop
+          > Access to field 'Flags' results in a
+             dereference of a null pointer
+              (loaded from field 'RootWindowFo...
+
+475    void ImGui::UpdateWindowParentAndRootLinks(ImGuiWindow* window, ImGuiWindowFlags flags, ImGuiWindow* parent_window)
+476    {
+477        window->ParentWindow = parent_window;
+478        window->RootWindow = window->RootWindowForNav = window;
+        Value assigned to field 'ParentWindow'
+        Assuming 'parent_window' is null
+479        if (parent_window && (flags & ImGuiWindowFlags_Tooltip))
+             Assuming 'parent_window' 
+480            window->RootWindow = parent_window->RootWindow;
+481        if (parent_window && !(flags & ImGuiWindowFlags_ChildWindow) && !(flags & (ImGuiWindowFlags_Popup)))
+482            window->RootWindowForTitleBarHighlight = parent_window->RootWindowForTitleBarHighlight;
+        Entering loop body
+483        while (window->RootWindowForNav->Flags & ImGuiWindowFlags_NavFlattened)
+484            window->RootWindowForNav = window->RootWindowForNav->ParentWindow;
+        Access to field 'Flags' results in a
+dereference of a null pointer
+485
+486
+487    }

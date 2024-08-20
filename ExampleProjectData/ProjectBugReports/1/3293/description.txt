@@ -1,0 +1,10 @@
+Hi @ocornut, just want to let you know that the table rendering is broken since you updated tables branch last time. In the picture below, the background rendering is only visible in the last column.
+![image](https://user-images.githubusercontent.com/8452952/84189576-c0388500-aa95-11ea-8f1d-ace05907f1b0.png)
+
+Unfortunately, I can't tell what exactly happening in the tables branch, but previous commit reference is not found on the GitHub anymore. If I try to go back in history, all the commits have the same issue. My local commit reference is still OK.
+
+This is the commit: e69be296a630654643f730654cc6866b568ef6f8 - Tables: Avoid TableGetSortSpecs() having a side-effect on sort specs sanitization.
+This is the old (working) reference for the same commit which is not available now: b110e5b48b91833766377a74d3e81a4b02ced882 
+
+
+

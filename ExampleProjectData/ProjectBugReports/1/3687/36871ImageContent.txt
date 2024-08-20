@@ -1,0 +1,12 @@
+ImGui::Begin("Error test");
+ImGui::ListBoxHeader("Test");
+ImGui::Selectable("A", false);
+ImGui::ListBoxFooter();
+ImGui::End();
+
+if (menus.Settin{s} { ..... } 
+Exception Thrown
+ 
+Exception thrown: read access violation.
+
+parent_window was nullptr.

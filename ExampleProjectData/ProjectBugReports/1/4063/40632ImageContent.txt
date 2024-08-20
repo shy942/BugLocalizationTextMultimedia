@@ -1,0 +1,9 @@
+Normal Rendering
+Position : 0.00 0.00 0.00
+Rotation : 0.00
+Zoom : 1.48
+height : 1.00
+MousePosition : 13.32 0.00 -19.60
+BrushState: 1
+LayerState: 1
+Object:Character and Grid : sieg

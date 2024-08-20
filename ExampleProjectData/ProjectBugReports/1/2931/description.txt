@@ -1,0 +1,23 @@
+**Version/Branch of Dear ImGui:**
+
+Version: v1.74 WIP
+Branch: master
+
+**My Issue/Question:**
+
+DragBehaviorT (so all of Drag Widgets) clamp value only when v_min < v_max. In my case I want to clamp only by min value (trying to manipulate my object's size).
+
+Is there a possibility to improve behavior in this case?
+
+**Screenshots/Video**
+
+![1016d8fd4fe88247b351c8fb8029](https://user-images.githubusercontent.com/2908998/70792530-4449d280-1dbb-11ea-9e0c-48a8162a258a.png)
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+```
+ImGui::Begin("Imgui DragFloat Issue");
+static float size= 5.0f;
+ImGui::DragFloat("size", &size, 1.0f, 0.0f);
+ImGui::End();
+```
+

@@ -1,0 +1,44 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.65
+Branch: release version
+
+**Back-end/Renderer/Compiler/OS** 
+
+Back-ends: imgui_impl_win32.cpp + imgui_impl_dx9.cpp
+Compiler: VS2015 with update 3, version 14.0.25420.1
+Operating System: Windows 7 x64
+
+**My Issue/Question:** 
+
+When I need to set different font size for different text, I need load font for each size, and each `AddFontFromFileTTF` will read the TTF file into memory. In my case, I use 3 times so I see the three times memory usage for the same TTF file, so is it possible to share only one TTF file to save the memory usage?
+
+**Standalone, minimal, complete and verifiable example:** _(see CONTRIBUTING.md)_
+See the line 5
+```
+ImFont* ImFontAtlas::AddFontFromFileTTF(const char* filename, float size_pixels, const ImFontConfig* font_cfg_template, const ImWchar* glyph_ranges)
+{
+    IM_ASSERT(!Locked && "Cannot modify a locked ImFontAtlas between NewFrame() and EndFrame/Render()!");
+    size_t data_size = 0;
+    void* data = ImFileLoadToMemory(filename, "rb", &data_size, 0);  <- Here load file no matter whether it is loaded before
+    if (!data)
+    {
+        IM_ASSERT(0); // Could not load file.
+        return NULL;
+    }
+    ImFontConfig font_cfg = font_cfg_template ? *font_cfg_template : ImFontConfig();
+    if (font_cfg.Name[0] == '\0')
+    {
+        // Store a short copy of filename into into the font name for convenience
+        const char* p;
+        for (p = filename + strlen(filename); p > filename && p[-1] != '/' && p[-1] != '\\'; p--) {}
+        ImFormatString(font_cfg.Name, IM_ARRAYSIZE(font_cfg.Name), "%s, %.0fpx", p, size_pixels);
+    }
+    return AddFontFromMemoryTTF(data, (int)data_size, size_pixels, &font_cfg, glyph_ranges);
+}
+```
+
+**Screenshots/Video** _(you can drag files here)_
+![image](https://user-images.githubusercontent.com/6134295/49777604-30990580-fd3c-11e8-9d91-2cdb9b615045.png)
+
+

@@ -1,0 +1,1 @@
+Some easy to fix Xcode static analyzer warnings (1.68 WIP)

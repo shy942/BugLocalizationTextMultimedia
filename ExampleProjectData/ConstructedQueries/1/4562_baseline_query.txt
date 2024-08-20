@@ -1,0 +1,1 @@
+null reference crash null close app tired add null check merge figured report define imgui impl win disable gamepad correct libraries crash nullptrs

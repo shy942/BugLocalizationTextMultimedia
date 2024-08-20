@@ -1,0 +1,39 @@
+RE: Vulkun + SDL + Linux (amd_gpu)
+
+While learning how to work with fonts i encountered two different issues.
+To resolve them both, i simply used different Mono font which both renders white and allows correct alignment of text. 
+Not sure if below are bugs or my system misbehaves.
+
+1) For one particular font on Linux - "gnu-free/FreeMono.ttf", if it is loaded first, all text is greyed out.
+Changing style didn't allow to make it white. Though same font loaded second (with twice the size) renders white. Rest of the fonts i tried are OK.
+![imgui_freemono ttf](https://user-images.githubusercontent.com/28832010/52272713-a692a500-2958-11e9-8385-e9e271099ecb.png)
+```
+ImVector<ImWchar> 	 ranges;
+ImFontGlyphRangesBuilder builder;
+
+builder.AddRanges   (io.Fonts->GetGlyphRangesDefault());
+builder.AddText     (u8"??");										
+builder.BuildRanges (&ranges);
+
+if (config.fonts) {
+	aux->fonts    = (ImFont **)calloc (2, sizeof (ImFont *));					
+	aux->fonts[0] = io.Fonts->AddFontFromFileTTF (config.fonts[0], 13.0f, NULL, ranges.Data);
+	aux->fonts[1] = io.Fonts->AddFontFromFileTTF (config.fonts[0], 26.0f, NULL, ranges.Data);
+	
+	unsigned char * pixels; 
+	int width, height, bytes_per_pixels; 
+	io.Fonts->GetTexDataAsAlpha8 (&pixels, &width, &height, &bytes_per_pixels);
+	IM_ASSERT (io.Fonts->Fonts[0]->IsLoaded());
+}
+```
+2) Second issue affected more fonts and screws formatting in ImGui::Text();
+```
+ImGui::Text ("current   %6.2f A", 0,52f);
+ImGui::Text ("voltage   %6.2f V", 112,ff);
+ImGui::Text ("cos ?   %6.2f", 0,72f);
+```
+See below example of misaligned text using "gnu-free/FreeSans.ttf" and normal behaviour with default ImGui font.
+![imgui_misalignment](https://user-images.githubusercontent.com/28832010/52273009-95966380-2959-11e9-914e-938771bec964.png)
+![imgui_normal](https://user-images.githubusercontent.com/28832010/52273076-bc549a00-2959-11e9-8a99-95666fc720ef.png)
+
+

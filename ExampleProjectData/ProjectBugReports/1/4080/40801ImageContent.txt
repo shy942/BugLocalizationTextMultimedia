@@ -1,0 +1,4 @@
+Value               label
+AAAA                combo (?)
+Blurry Caret        input text (?)
+enter text here     input text (w/ hint) (?)

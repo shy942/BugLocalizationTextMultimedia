@@ -1,0 +1,1 @@
+Regression with Columns() + AlwaysAutoResize between 1.51 and 1.53

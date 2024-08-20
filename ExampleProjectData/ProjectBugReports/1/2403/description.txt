@@ -1,0 +1,6 @@
+i can't write Vietnamese in imgui, some characters work, some characters are replaced by "?"
+Ex: ImGui::Text(u8"Nguyên ?ông D??ng");
+Result:
+![image](https://user-images.githubusercontent.com/48280785/53876088-9f82b380-4038-11e9-9951-1630a9338e48.png)
+
+I hope everyone will help me, thank you very much

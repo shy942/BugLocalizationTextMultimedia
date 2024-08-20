@@ -1,0 +1,32 @@
+ImGui Version: v1.61
+Backend: DirectX11 sample (as well as our own DirectX12)
+
+It seems if I create a popup (modal or otherwise) I cannot use a combo box in the popup.  Clicking the down arrow on the combo box flickers for a frame and then disappears.  This works just fine with a regular window.
+
+Thanks so much for writing ImGui by the way!  It's great!  I'm going to get our company to send you a donation here soon, as looks like we will be using ImGui more and more.
+
+Cheers,
+
+-Steve
+
+```
+ImGui::OpenPopup("BrokenComboBoxes");
+if (ImGui::BeginPopupModal("BrokenComboBoxes", nullptr, 0)) {
+	static int loggingLevel = 0;
+	static const char* logLevels[] = {
+		"Trace",
+		"Debug",
+		"Info",
+		"Warn",
+		"Error",
+		"Critical"
+	};
+	ImGui::Combo("Logging Level", &loggingLevel, logLevels, IM_ARRAYSIZE(logLevels));
+}
+ImGui::EndPopup();
+```
+
+
+<img width="947" alt="brokencomboboxes" src="https://user-images.githubusercontent.com/23868468/41052550-edcd46a6-696d-11e8-8808-42e22fa79129.png">
+
+

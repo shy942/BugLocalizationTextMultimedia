@@ -1,0 +1,1 @@
+Text rendering is messed up with latest commit (openGL + GLFW)

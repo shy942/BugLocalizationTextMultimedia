@@ -1,0 +1,6 @@
+Assertion failed!
+
+Program: G:\dev\CodeForGame\cmake-build-debug\CodeForGame.exe
+File: G:\dev\CodeForGame\externals\imgui\misc\freetype\imgui_freetype.cpp, Line 541
+
+Expression: ft_bitmap

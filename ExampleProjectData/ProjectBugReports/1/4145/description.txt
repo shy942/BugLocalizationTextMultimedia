@@ -1,0 +1,26 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.83 WIP
+Branch: master
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_opengl3.cpp + imgui_impl_glfw.cpp
+Compiler: mingw64 gcc8.1.0
+Operating System: windows 10 x64
+
+**My Issue/Question:**
+
+I use the clion to program my project. When i see the imgui_freetype.h/.cpp, it can enable bitmap mode. I want to use this function, but i get assert like next screenshot after i set like this pull [3879](https://github.com/ocornut/imgui/pull/3879).
+
+**Screenshots/Video**
+![image](https://user-images.githubusercontent.com/20499955/118400633-05493c00-b695-11eb-99d5-b7ebc7a3877d.png)
+
+**Standalone, minimal, complete and verifiable example:** _(see https://github.com/ocornut/imgui/issues/2261)_
+```
+ImFontConfig font_config;
+font_config.SizePixels = 13.0f;
+font_config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bitmap;
+io.Fonts->AddFontFromFileTTF("c:\\windows\\fonts\\msgothic.ttc", 13.0f, &font_config, io.Fonts->GetGlyphRangesJapanese());
+```
+

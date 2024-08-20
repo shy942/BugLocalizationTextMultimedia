@@ -1,0 +1,33 @@
+Batch view
+                command filter                    field filter 
+Collapse columns
+                 0x00020004:  MI_LOAD_REGISTER_IMM
+0x00020004:  0x11000001  : Dword 0
+    DWord Length: 1
+    Byte Write Disables: 0
+0x000200008:  0x00000004  : Dword 1
+    Register Offset: 0x00000004
+0x00020000c:  0x00100012  : Dword 2
+    Data DWord: 1179666
+
+                 0x00020010:  3DSTATE_AA_LINE_PARAMETERS 
+0x00020010:  0x79000001  : Dword 0
+    DWord Length: 1
+0x000200014:  0x00000000  : Dword 1
+    AA Coverage Slope: 0.00000
+    AA Point Coverage Slope: 0.00000
+        AA Coverage Bias: 0.00000
+        AA Point Coverage Bias: 0.00000    
+0x000200018:  0x00000000  : Dword 2
+    AA Coverage EndCap Slope: 0.00000
+        AA Point Coverage EndCap Slope: 0.00000
+        AA Coverage EndCap Bias: 0.00000
+        AA Point Coverage EndCap Bias: 0.00000
+
+                 0x0002001c:  3DSTATE_DRAWING_RECTANGLE 
+0x0002001c:  0x78000002  : Dword 0
+    DWord Length: 2
+        Core Mode Select: 0 (Legacy)
+0x000200020:  0x00000000  : Dword 1
+        Clipped Drawing Rectangle X Min: 0
+        Clipped Drawing Rectangle Y Min: 0

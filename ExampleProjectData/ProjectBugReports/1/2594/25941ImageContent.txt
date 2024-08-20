@@ -1,0 +1,31 @@
+┌ Hello, world!
+│
+│ Edit: This is some useful text.
+│ [ ] Demo Window
+│ [ ] Another Window
+│
+│ float = 0.358 [       |    ]
+│
+│ radio a radio b radio c
+│ slider int
+│ color ~
+│ Color Widget
+│
+│ Application average 6.33 ms/frame
+└────────────────────────────────    
+╔ Dear ImGui Demo
+║
+╟ Inputs,
+╟ Configuration
+╟ Widgets
+╟ Widgets...
+╟ Widgets...
+╟ Widgets...
+╟...
+╟..
+╟..
+╟..  
+╟ 
+╟..
+╟..
+───────────────────────────────

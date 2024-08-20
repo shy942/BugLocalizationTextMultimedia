@@ -1,0 +1,34 @@
+**Version/Branch of Dear ImGui:**
+
+Version: 1.67
+Branch: master
+
+**Back-end/Renderer/Compiler/OS** 
+
+Backends: Direct3D 9
+Compiler: msvc141 VS17
+Operating System: Win10
+
+**Issue:** 
+
+Something tiny, but I though I should add it here.
+When enabling fog to the direct3d device, it will affect the ImGui UI's or render on top of them.
+Code example:
+```cpp
+s_lpD3DDev->SetRenderState(D3DRS_FOGENABLE, TRUE);
+
+ImGui_ImplDX9_NewFrame();
+ImGui_ImplWin32_NewFrame();
+ImGui::NewFrame();
+
+ImGui::Begin("Hello, world!"); 
+ImGui::End();
+
+ImGui::EndFrame();
+... and so on
+```
+
+**Screenshots/Video** 
+
+![imgui_fog](https://user-images.githubusercontent.com/17655494/51267668-8f4a4280-19be-11e9-89e6-68591566512c.png)
+

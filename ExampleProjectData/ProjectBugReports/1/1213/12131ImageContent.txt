@@ -1,0 +1,51 @@
+ImGui DirectX9 Example
+
+▼ Debug
+Hello, world!
+
+  0.000
+  float
+    R:114     G:144     B:154
+         clear color
+[ Test Window ]
+[ Another Window ]
+Application average 0.372 ms/frame (2688.8 FPS)
+
+ImGui DirectX11 Example
+
+▼ Debug
+Hello, world!
+
+  0.000
+  float
+    R:114     G:144     B:154
+         clear color
+[ Test Window ]
+[ Another Window ]
+Application average 0.442 ms/frame (2264.2 FPS)
+
+ImGui OpenGL2 example
+
+▼ Debug
+Hello, world!
+
+  0.000
+  float
+    R:114     G:144     B:154
+         clear color
+[ Test Window ]
+[ Another Window ]
+Application average 16.799 ms/frame (59.5 FPS)
+
+ImGui OpenGL3 example
+
+▼ Debug
+Hello, world!
+
+  0.000
+  float
+    R:114     G:144     B:154
+         clear color
+[ Test Window ]
+[ Another Window ]
+Application average 16.667 ms/frame (60.0 FPS)

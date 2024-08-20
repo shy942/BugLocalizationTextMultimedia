@@ -1,0 +1,16 @@
+urukaro [A]
+urukaro [A]
+urukaro [A]
+urukaro [A]
+urukaro [A]
+urukaro [A] 
+<… the pattern continues …>
+
+hamdaddy@hamdaddy:~/Workspace/shuru-karo/build
+
+../imgui/imgui.cpp:7200: void  ImGui::ErrorCheckNewFrameSanityChecks(): Assertion `g.FrameCount == 0 || g.FrameCountEnded == g.FrameCount` && "Forgot to call Ro...
+
+slingshot
+
+Scene
+Temp

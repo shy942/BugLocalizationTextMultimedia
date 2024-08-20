@@ -1,0 +1,116 @@
+```
+Dear ImGui 1.82 (18200)
+--------------------------------
+sizeof(size_t): 4, sizeof(ImDrawIdx): 2, sizeof(ImDrawVert): 20
+define: __cplusplus=199711
+define: _WIN32
+define: _MSC_VER=1600
+--------------------------------
+io.BackendPlatformName: imgui_impl_win32
+io.BackendRendererName: imgui_impl_dx9
+io.ConfigFlags: 0x00000000
+io.ConfigInputTextCursorBlink
+io.ConfigWindowsResizeFromEdges
+io.ConfigMemoryCompactTimer = 60.0
+io.BackendFlags: 0x0000000E
+ HasMouseCursors
+ HasSetMousePos
+ RendererHasVtxOffset
+--------------------------------
+io.Fonts: 1 fonts, Flags: 0x00000000, TexSize: 512,64
+io.DisplaySize: 1280.00,768.00
+io.DisplayFramebufferScale: 1.00,1.00
+--------------------------------
+style.WindowPadding: 8.00,8.00
+style.WindowBorderSize: 1.00
+style.FramePadding: 4.00,3.00
+style.FrameRounding: 0.00
+style.FrameBorderSize: 0.00
+style.ItemSpacing: 8.00,4.00
+style.ItemInnerSpacing: 4.00,4.00
+```
+**Version/Branch of Dear ImGui:**
+
+Version: 1.82
+Branch: Release
+
+**Back-end/Renderer/Compiler/OS**
+
+Back-ends: imgui_impl_dx9.cpp + imgui_impl_win32.cpp
+Compiler: msvc2010
+Operating System: win10
+
+**My Issue/Question:**
+
+I'm trying to implement ImGui on an old game, Lunia: Record of Lunia War, using their original implementation of directX and by hooking into the EndScene using:
+```cpp
+//Static variables initialized with the game engine
+                HWND window;
+	        typedef HRESULT(__stdcall * f_EndScene)(IDirect3DDevice9 * pDevice); // Our function prototype 
+	        f_EndScene oEndScene; // Original Endscene
+
+	        typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
+
+	        WNDPROC oWndProc;
+	        // Data
+	        static LPDIRECT3D9              g_pD3D = NULL;
+	        static LPDIRECT3DDEVICE9        g_pd3dDevice = NULL;
+	        static D3DPRESENT_PARAMETERS    g_d3dpp = {};
+	        static HWND hwnd;
+//end of variables
+	        .
+	        .
+	        .
+//Main setup called after the engine is fully initialized.
+                oWndProc = (WNDPROC)SetWindowLongPtr(window, GWLP_WNDPROC, (LONG_PTR)WndProc);
+
+		if (!g_pD3D)
+			return false;
+
+		if(!g_pd3dDevice)
+			return false;
+		void ** pVTable = *reinterpret_cast<void***>(g_pd3dDevice);
+			
+		oEndScene = (f_EndScene)DetourFunction((PBYTE)pVTable[42], (PBYTE)Hooked_EndScene); 
+//
+        HRESULT __stdcall Hooked_EndScene(IDirect3DDevice9 * pDevice)
+	{
+		static bool show_demo_window = true;
+		static bool show_another_window = false;
+		static bool init = true;
+		if(init){
+			init = false;
+			IMGUI_CHECKVERSION();
+    		ImGui::CreateContext();
+			ImGuiIO& io = ImGui::GetIO(); (void)io;
+			ImGui::StyleColorsDark(); 
+			ImGui_ImplWin32_Init(hwnd);
+   	 		ImGui_ImplDX9_Init(g_pd3dDevice);
+		}
+		{
+			ImGui_ImplDX9_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			static bool show_demo_window = true;
+			ImGui::ShowDemoWindow(&show_demo_window);
+			ImGui::ShowMetricsWindow();
+
+			ImGui::EndFrame();
+			ImGui::Render();
+			ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
+		}
+		return oEndScene(pDevice); // Call original ensdcene so the game can draw
+	}
+```
+I know for a fact that the problem is due to the rendering of the game interfering with ImGui but since I'm not really an expert by any means on rendering, rasterizing even after playing around for a while with the backend of things I could not find a solution to the problem. I tried changing themes, tweaking some of the device initialization for DirectX and couldn't get it to work. I'd like to know if this is a common issue and if it's if there are any workarounds other than creating a new separate window and drawing it separately and using it as an "overlay".
+Thanks for your time! :)
+
+**Screenshots/Video**
+
+![LuniaTestFramework_VNnlgo60IA](https://user-images.githubusercontent.com/66783472/115739776-34051880-a35c-11eb-8a58-f7ed9c39485f.png)
+![LuniaTestFramework_dS0dDN0tv4](https://user-images.githubusercontent.com/66783472/115739863-4aab6f80-a35c-11eb-8f11-8ae4c1cda3f6.png)
+
+
+
+

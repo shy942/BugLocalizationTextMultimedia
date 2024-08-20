@@ -1,0 +1,29 @@
+Commit introducing this issue: https://github.com/ocornut/imgui/commit/46d75202b82dba5e32105219d2ea5947648a4ed8
+Issue: offset points outside of the buffer (backwards because it's casted to signed short without checks)
+Code:
+```cpp
+ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Once);
+if (ImGui::Begin("NameOffset"))
+{
+    if (ImGui::BeginTabBar("tabbar", ImGuiTabBarFlags_TabListPopupButton))
+    {
+        // ... or long tab names, total characters should be > 32767
+        for (auto i = 0; i != 2048; ++i)
+        {
+            ImGui::PushID(i);
+            if (ImGui::BeginTabItem("ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+                ImGui::EndTabItem();
+            ImGui::PopID();
+        }
+        ImGui::EndTabBar();
+    }
+    ImGui::End();
+}
+```
+![NameOffsetBug](https://user-images.githubusercontent.com/26506177/119713923-8b6a3d00-be62-11eb-802c-ec9da7ca14d8.PNG)
+
+I don't know why it was changed to S16 but changing it to S32 fixes this as expected
+This is how it looks like in the latest commit on master:
+https://github.com/ocornut/imgui/blob/04fd5072fbc635cc7a8814b8543d40836248d3a7/imgui_internal.h#L1956-L1971
+https://github.com/ocornut/imgui/blob/04fd5072fbc635cc7a8814b8543d40836248d3a7/imgui_widgets.cpp#L7767-L7769
+https://github.com/ocornut/imgui/blob/04fd5072fbc635cc7a8814b8543d40836248d3a7/imgui_internal.h#L2010-L2014

@@ -1,0 +1,1 @@
+deterministic crashes freeglut started gui freeglut sporadically crashes startup unmodified crashes crash happen imgui cpp assert delta time frame count positive delta time disabling assert fine master windows freeglut library awesome

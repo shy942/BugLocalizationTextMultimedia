@@ -1,0 +1,1 @@
+The image shows a screenshot of an operating system desktop environment with multiple terminal windows open. The background of the desktop is a dark purple color. The top of the desktop has a title bar with the current date and time displayed as "Sep 24 17:58". Below that is a terminal window with the title "hamdaddy@hamdaddy:~/Workspace/shuru-karo/build".   

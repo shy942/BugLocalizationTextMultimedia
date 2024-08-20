@@ -1,0 +1,54 @@
+Version: 1.83
+Branch: docking
+
+**My Issue/Question:**How can I have multiple windows (initialized with `::Begin`) with the same name?
+
+I'm trying to have multiple windows for my game engine called "Project Hierarchy" and "Map Hierarchy", which works fine... until I have two instances of a window like "Map Hierarchy" open, in which case they will have duplicated instances on one window instead of separate windows.
+
+**Screenshot**
+![image](https://user-images.githubusercontent.com/36088749/127004595-6f3ab3de-b37e-4796-91b9-a89a6f072ce1.png)
+
+_ui.cpp_
+```cpp
+void Styler::startWindow(const char* title) {
+	static ImGuiWindowFlags titlebar_flags = ImGuiWindowFlags_None;
+	const ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+	ImGui::SetNextWindowViewport(viewport->ID);
+
+	ImGui::Begin(title, (bool*)true, titlebar_flags);
+}
+void Styler::endWindow() {
+	ImGui::End();
+}
+// ***
+void WindowMapHierarchy::Render() {
+	Styler::startWindow("Map Hierarchy");
+	ImGui::LabelText("", "Game Objects in Scene.");
+	Styler::endWindow();
+};
+```
+
+_ui.hpp_
+```hpp
+class Styler {
+public:
+	static void startWindow(const char* title);
+	static void endWindow();
+};
+class BaseWindow {
+public:
+	BaseWindow() {};
+	~BaseWindow() {};
+
+	virtual void Render() {};
+};
+class WindowMapHierarchy : public BaseWindow { public: void Render(); };
+```
+
+_app.cpp_
+```cpp
+WindowMapHierarchy win_mapHierarchy{};
+```
+
+If you do use this code, just call the Render function of win_mapHierarchy, I did remove a lot of code from this uploaded code to simplify it and still have it usable, but yeah, if you make two instances of `WindowMapHierarchy win_mapHierarchy{};` in the app implementation file, and call both of the Render functions one after another, all the elements get combined into one, any solution for this?
