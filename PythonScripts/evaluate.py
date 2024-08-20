@@ -22,6 +22,7 @@ def compute_evaluation(groundtruth_data, search_data):
     worse_count = 0
     
     missing_groundtruth_count = 0
+    total_groundtruth_count = 0
     bug_reports_affected = []
     bug_reports_missing_groundtruth = []
     
@@ -93,6 +94,7 @@ def compute_evaluation(groundtruth_data, search_data):
         'improvement_count': improvement_count,
         'same_count': same_count,
         'worse_count': worse_count,
+        'total_groundtruth_count': total_groundtruth_count,
         'missing_groundtruth_count': missing_groundtruth_count,
         'bug_reports_affected': bug_reports_affected,
         'bug_reports_missing_groundtruth': bug_reports_missing_groundtruth,
@@ -105,7 +107,7 @@ def compute_evaluation(groundtruth_data, search_data):
 # read and format the groundtruth to a dictionary
 def parse_groundtruth(groundtruth_file, source_code_root):
     groundtruth_data = {}
-    
+    total_groundtruth_count = 0
     with open(groundtruth_file, 'r') as file:
         while True:
             query_line = file.readline().strip()
@@ -123,6 +125,7 @@ def parse_groundtruth(groundtruth_file, source_code_root):
                     line = '/'.join(parts[:-1]) + '.' + parts[-1]
                 
                 full_path = os.path.join(source_code_root, line)
+                total_groundtruth_count += 1
                 if os.path.exists(full_path):
                     groundtruth_entries.add(line)
                 else:
@@ -130,7 +133,7 @@ def parse_groundtruth(groundtruth_file, source_code_root):
                 
             groundtruth_data[query_name] = (groundtruth_entries, non_existent_count)
         
-    return groundtruth_data
+    return groundtruth_data, total_groundtruth_count
 
 
 # read and format the stored query search results to a dictionary
@@ -185,7 +188,7 @@ def main (source_root, results_folder, evaluation_folder):
         
         # gather the groundtruth data
         groundtruth_path = os.path.join(source_corpus, groundtruth_file)
-        groundtruth_data = parse_groundtruth(groundtruth_path, source_code_root)
+        groundtruth_data, total_groundtruth_count = parse_groundtruth(groundtruth_path, source_code_root)
         
         # gather the search results data
         search_result_path = os.path.join(results_folder, result)
@@ -195,27 +198,41 @@ def main (source_root, results_folder, evaluation_folder):
         data = compute_evaluation(groundtruth_data, search_data)
         
         # save search results
+        bug_report_count = len(data['bug_report_ranks'])
+        bug_reports_missing_count = len(data['bug_reports_missing_groundtruth'])
+        bug_reports_considered_count = bug_report_count - bug_reports_missing_count
+        
         storage_path = os.path.join(evaluation_folder, f"{project}_query_evaluation.txt")
-    with open(storage_path, 'w') as file:
-        file.write(f"Total amount of groundtruth files not found in source code: {data['missing_groundtruth_count']}\n")
-        file.write(f"Bug reports where all groundtruth files do not exist: {data['bug_reports_missing_groundtruth']}\n")
-        file.write(f"Bug reports where some groundtruth files were missing: {data['bug_reports_affected']}\n")
-        file.write(f"\nQE Improved Count: {data['improvement_count']}\n")
-        file.write(f"QE Identical Count: {data['same_count']}\n")
-        file.write(f"QE Worse Count: {data['worse_count']}\n")
+        with open(storage_path, 'w') as file:
+            file.write(f"Project {project}:\n\n")
+            file.write(f"Total number of groundtruth files: {total_groundtruth_count}\n")
+            file.write(f"Total number of bugs: {bug_report_count}\n")
+            file.write(f"Total amount of groundtruth files not found in source code: {data['missing_groundtruth_count']}\n")
+            
+            file.write(f"Total number of Bug reports where all groundtruth files do not exist: {bug_reports_missing_count}\n")
+            file.write(f"Bug reports where all groundtruth files do not exist: {data['bug_reports_missing_groundtruth']}\n")
+            
+            file.write(f"Total number of bug reports where some groundtruth files were missing: {len(data['bug_reports_affected'])}\n")
+            file.write(f"Bug reports where some groundtruth files were missing: {data['bug_reports_affected']}\n")
+            
+            file.write(f"Total number of considered bugs: {bug_reports_considered_count}\n")
+            
+            file.write(f"\nQE Improved Count: {data['improvement_count']}\n")
+            file.write(f"QE Identical Count: {data['same_count']}\n")
+            file.write(f"QE Worse Count: {data['worse_count']}\n")
     
-        file.write(f"\nHit@K for baseline queries:\n")
-        for k, percentage in data['hit_at_k_baseline_percent'].items():
-            file.write(f"Hit@{k}: {percentage:.2f}%\n")
+            file.write(f"\nHit@K for baseline queries:\n")
+            for k, percentage in data['hit_at_k_baseline_percent'].items():
+                file.write(f"Hit@{k}: {percentage:.2f}%\n")
         
-        file.write(f"\nHit@K for extended queries:\n")
-        for k, percentage in data['hit_at_k_extended_percent'].items():
-            file.write(f"Hit@{k}: {percentage:.2f}%\n")
+            file.write(f"\nHit@K for extended queries:\n")
+            for k, percentage in data['hit_at_k_extended_percent'].items():
+                file.write(f"Hit@{k}: {percentage:.2f}%\n")
         
-        file.write("\nQuery Ranks:\n")
-        for rank_info in data['bug_report_ranks']:
-            file.write(f"{rank_info['query_name']}, 'Baseline', {rank_info['baseline_rank']}\n")
-            file.write(f"{rank_info['query_name']}, 'Extended', {rank_info['extended_rank']}\n")
+            file.write("\nIndividual Results:\n")
+            for rank_info in data['bug_report_ranks']:
+                file.write(f"{rank_info['query_name']}, 'Baseline', {rank_info['baseline_rank']}\n")
+                file.write(f"{rank_info['query_name']}, 'Extended', {rank_info['extended_rank']}\n")
                 
         print(f"stored evaluation for project {project} to {storage_path}")
 
