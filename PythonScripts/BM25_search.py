@@ -1,5 +1,6 @@
 import os
 import lucene
+import sys
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.index import DirectoryReader
@@ -36,7 +37,8 @@ def save_search_results(search_results, project, store_folder):
         
         for title in sorted_titles:
             bug_id, query_type, discard = title.split('_', 2)
-            f.write(f"{bug_id},{query_type}\n")
+            result_count = len(search_results[title])
+            f.write(f"{bug_id},{query_type},{result_count}\n")
             
             for result in search_results[title]:
                 filename = result['filename']
@@ -57,11 +59,14 @@ def search_index(queries, index_folder):
 
     results = {}
     
+    # java Integer.MAX_VALUE
+    searcher.setMaxClauseCount(2147483647)
+    
     # perform the search
     for query_title, query_str in queries.items():
         
         query = QueryParser("content", analyzer).parse(query_str)
-        hits = searcher.search(query, 10).scoreDocs
+        hits = searcher.search(query, 2147483647).scoreDocs
 
         result_list = []
         for hit in hits:

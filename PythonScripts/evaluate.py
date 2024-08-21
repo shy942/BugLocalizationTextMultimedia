@@ -43,20 +43,33 @@ def compute_evaluation(groundtruth_data, search_data):
             continue
         extended_results = search_data[(query_name, 'extended')]
         
-        # gather the search results and groundtruth data for comparison against one another
+        # gather the groundtruth data for comparison against search results
         groundtruth_set, missing_truth_count = groundtruth_data.get(query_name, (set(), 0))
+        
+        # prevent further calculations if no groundtruth exists
+        if not groundtruth_set:
+            bug_reports_missing_groundtruth.append(query_name)
+            continue
+        elif missing_truth_count > 0:
+            bug_reports_affected.append(query_name)
+        
+        # gather the search results for comparison against groundtruth data
         baseline_files = [result.split(',')[0] for result in search_results]
         extended_files = [result.split(',')[0] for result in extended_results]
         
-        # compute baseline and extended rank
-        baseline_rank = next((i + 1 for i, result in enumerate(baseline_files) if result in groundtruth_set), float('inf'))
-        extended_rank = next((i + 1 for i, result in enumerate(extended_files) if result in groundtruth_set), float('inf'))
+        # compute all baseline and extended ranks
+        baseline_ranks = [i + 1 for i, result in enumerate(baseline_files) if result in groundtruth_set]
+        extended_ranks = [i + 1 for i, result in enumerate(extended_files) if result in groundtruth_set]
+
+        # Retrieve the first rank if available, otherwise set to None
+        baseline_rank = baseline_ranks[0] if baseline_ranks else float('inf')
+        extended_rank = extended_ranks[0] if extended_ranks else float('inf')
         
-        # store individual ranks
+        # store individual ranks (lists of all ranks found)
         bug_report_ranks.append({
             'query_name': query_name,
-            'baseline_rank': baseline_rank if baseline_rank != float('inf') else None,
-            'extended_rank': extended_rank if extended_rank != float('inf') else None
+            'baseline_rank': baseline_ranks if baseline_ranks else None,
+            'extended_rank': extended_ranks if extended_ranks else None
         })
         
         # store whether rank improved with the extended query
@@ -66,13 +79,6 @@ def compute_evaluation(groundtruth_data, search_data):
             same_count += 1
         else:
             worse_count += 1
-        
-        # prevent matrices calculations if no groundtruth existed
-        if not groundtruth_set:
-            bug_reports_missing_groundtruth.append(query_name)
-            continue
-        elif missing_truth_count > 0:
-            bug_reports_affected.append(query_name)
         
         # calculate mmr
         if baseline_rank != float('inf'):
@@ -199,11 +205,12 @@ def parse_search_results(search_result_file):
             if not query_line:
                 break
             
-            query_name, query_type = query_line.split(',')
+            query_name, query_type, result_count = query_line.split(',')
+            result_count = int(result_count)
             search_results = []
             
             # formatting each path for comparison to groundtruth
-            for _ in range(10):
+            for _ in range(result_count):
                 line = file.readline().strip()
                 parts = line.split('/')
                 if len(parts) > 1:
