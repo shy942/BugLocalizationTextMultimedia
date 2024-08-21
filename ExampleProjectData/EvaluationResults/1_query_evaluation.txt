@@ -1,13 +1,13 @@
 Project 1:
 
 Total number of groundtruth files: 57
-Total number of bugs: 60
+Total number of bugs: 65
 Total amount of groundtruth files not found in source code: 27
 Total number of Bug reports where all groundtruth files do not exist: 5
 Bug reports where all groundtruth files do not exist: ['1213', '2593', '2594', '2922', '4582']
 Total number of bug reports where some groundtruth files were missing: 16
 Bug reports where some groundtruth files were missing: ['1259', '1295', '1703', '1739', '1839', '1840', '1859', '1865', '1869', '1987', '2234', '2288', '2430', '3291', '4562', '4650']
-Total number of considered bugs: 55
+Total number of considered bugs: 60
 
 QE Improved Count: 11
 QE Identical Count: 43

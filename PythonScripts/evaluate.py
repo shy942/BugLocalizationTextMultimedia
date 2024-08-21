@@ -270,9 +270,9 @@ def main (source_root, results_folder, evaluation_folder):
         data = compute_evaluation(groundtruth_data, search_data)
         
         # save search results
-        bug_report_count = len(data['bug_report_ranks'])
+        bug_reports_considered_count = len(data['bug_report_ranks'])
         bug_reports_missing_count = len(data['bug_reports_missing_groundtruth'])
-        bug_reports_considered_count = bug_report_count - bug_reports_missing_count
+        bug_report_count = bug_reports_considered_count + bug_reports_missing_count
         
         storage_path = os.path.join(evaluation_folder, f"{project}_query_evaluation.txt")
         with open(storage_path, 'w') as file:
