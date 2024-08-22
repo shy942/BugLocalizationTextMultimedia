@@ -20,6 +20,7 @@ constructed_queries_root = "../ExampleProjectData/ConstructedQueries"
 
 
 
+# read file with backup encoding if utf-8 fails
 def read_file(file_path, encoding='utf-8'):
     try:
         with open(file_path, 'r', encoding=encoding) as file:
@@ -92,10 +93,14 @@ def preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, us
     baseline_query = preprocess_text(title + " " + description, stopwords, use_stemming)
     extended_query = baseline_query + " " + preprocess_text(images_info, stopwords, use_stemming)
     
-    # save files
-    baseline_file_path = os.path.join(store_path, f'{bug_report}_baseline_query.txt')
-    extended_file_path = os.path.join(store_path, f'{bug_report}_extended_query.txt')
+    # save files named accordingly
+    if use_stemming:
+        store_path = store_path + "_stem"
+    else:
+        store_path = store_path + "_no_stem"
         
+    baseline_file_path = os.path.join(store_path, f'{bug_report}_baseline_query_stem.txt')
+    extended_file_path = os.path.join(store_path, f'{bug_report}_extended_query_stem.txt')
     os.makedirs(store_path, exist_ok=True)
     
     # save baseline query to file
@@ -133,8 +138,8 @@ def main(projects_root, store_root, use_stemming):
         for bug_report in bug_reports:
             bug_report_path = os.path.join(project_path, bug_report)
             store_path = os.path.join(store_root, project)
-            preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, use_stemming)
-
+            preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, True)
+            preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, False)
 
 
 if __name__ == "__main__":

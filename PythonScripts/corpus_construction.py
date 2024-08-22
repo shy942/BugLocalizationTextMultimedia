@@ -1,6 +1,7 @@
 import os
 import shutil
 import lucene
+import re
 from java.nio.file import Paths
 from org.apache.lucene.analysis.standard import StandardAnalyzer
 from org.apache.lucene.index import IndexWriter, IndexWriterConfig
@@ -9,13 +10,10 @@ from org.apache.lucene.document import Document, StringField, TextField, Field
 from query_construction import preprocess_text, load_stopwords, read_file
 
 
-# modify global variables to specify folder paths and stemming option 
-
-# use stemming when preprocessing text
-use_stemming = False
+# modify global variables to specify folder paths
 
 # folder where all projects source codes are contained
-soure_codes_root = "../ExampleProjectData/SourceCodes"
+source_codes_root = "../ExampleProjectData/SourceCodes"
 
 # folder to store each projects constructed indexes
 project_indexes_root = "../ExampleProjectData/ProjectIndexes"
@@ -49,8 +47,15 @@ def index_documents(index_dir, documents):
 def preprocess_documents(documents, stopwords, use_stemming):
     preprocessed_docs = []
     for filename, content in documents:
-        preprocessed_content = preprocess_text(content, stopwords, use_stemming)
-        preprocessed_docs.append((filename, preprocessed_content))
+        print(f"preprocessing {filename}")
+        
+        try:
+            preprocessed_content = preprocess_text(content, stopwords, use_stemming)
+            preprocessed_docs.append((filename, preprocessed_content))
+            
+        except RecursionError:
+            print(f"Recursion error processing {filename}. Skipping document.")
+            
     return preprocessed_docs
 
 
@@ -58,12 +63,13 @@ def preprocess_documents(documents, stopwords, use_stemming):
 def collect_source_documents(directory):
     source_documents = []
     base_directory = os.path.basename(os.path.normpath(directory))
-    
     for root, dirs, files in os.walk(directory):
+    
+        # filter out hidden directories
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for file in files:
-            if not file.startswith('.'):
+            if not file.startswith('.'): # filter out hidden files
                 file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(file_path, os.path.join(directory, ".."))
                 source_documents.append((relative_path, read_file(file_path)))
@@ -71,7 +77,16 @@ def collect_source_documents(directory):
     return source_documents
 
 
-def main(source_root, index_root, use_stemming):
+# get number for project
+def extract_number_from_end(string):
+    match = re.search(r'(\d+)$', string)
+    if match:
+        return int(match.group(1))
+    else:
+        return None
+
+
+def main(source_root, index_root):
 
     stopwords = load_stopwords("stop_words_english.txt")
     lucene.initVM()
@@ -81,21 +96,34 @@ def main(source_root, index_root, use_stemming):
         
         # find the source code path
         source_path = os.path.join(source_root, project, project)
-        project_name = next(dir_name for dir_name in os.listdir(source_path) if dir_name != "Corpus")
+        project_name = [dir_name for dir_name in os.listdir(source_path)
+                   if os.path.isdir(os.path.join(source_path, dir_name))
+                   and not dir_name.startswith('.')  # Ignore hidden directories
+                   and dir_name != "Corpus"][0]
         project_source_path = os.path.join(source_path, project_name)
+        
         
         # gather the source docs and preprocess them
         source_documents = collect_source_documents(project_source_path)
-        preprocessed_documents = preprocess_documents(source_documents, stopwords, use_stemming)
+        print(f"starting preprocessing for {project}")
+        stem_preprocessed_documents = preprocess_documents(source_documents, stopwords, True)
+        no_stem_preprocessed_documents = preprocess_documents(source_documents, stopwords, False)
+        print(f"finished preprocessing for {project}")
+        
+        
+        # form paths to store the indexes
+        project_num = extract_number_from_end(project)
+        stem_index_path = os.path.join(index_root, str(project_num) + "_stem")
+        no_stem_index_path = os.path.join(index_root, str(project_num) + "_no_stem")
         
         # index the documents
-        index_path = os.path.join(index_root, list(project)[-1])
-        index_documents(index_path, preprocessed_documents)
+        index_documents(stem_index_path, stem_preprocessed_documents)
+        index_documents(no_stem_index_path, no_stem_preprocessed_documents)
         print(f"Indexed {project}")
 
 
 if __name__ == "__main__":
 
-    main(soure_codes_root, project_indexes_root, use_stemming)
+    main(source_codes_root, project_indexes_root)
 
 

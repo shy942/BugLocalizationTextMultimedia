@@ -26,10 +26,12 @@ search_results_root = "../ExampleProjectData/SearchResults"
 # write the results to a file
 def save_search_results(search_results, project, store_folder):
 
+    number, stem_extension = project.split('_', 1)
+
     # determine where the results are being saved
     if not os.path.exists(store_folder):
         os.makedirs(store_folder)
-    output_file = os.path.join(store_folder, f"{project}_search_results.txt")
+    output_file = os.path.join(store_folder, f"{number}_search_results_{stem_extension}.txt")
     
     # iterate through each query and save all of their results
     with open(output_file, 'w') as f:
@@ -48,7 +50,7 @@ def save_search_results(search_results, project, store_folder):
     print(f"stored results for project {project} to {output_file}")
 
 
-def search_index(queries, index_folder):
+def search_index(queries, index_folder, project):
     
     # Open the index directory
     index_dir = FSDirectory.open(Paths.get(index_folder))
@@ -64,19 +66,22 @@ def search_index(queries, index_folder):
     
     # perform the search
     for query_title, query_str in queries.items():
-        
-        query = QueryParser("content", analyzer).parse(query_str)
-        hits = searcher.search(query, 2147483647).scoreDocs
-
+    
         result_list = []
-        for hit in hits:
-            doc = searcher.doc(hit.doc)
-            result_list.append({
-                'doc_id': hit.doc,
-                'filename': doc.get("filename"),
-                'content': doc.get("content"),
-                'score': hit.score
-            })
+        
+        if query_str.strip():
+        
+            query = QueryParser("content", analyzer).parse(query_str)
+            hits = searcher.search(query, 2147483647).scoreDocs
+            
+            for hit in hits:
+                doc = searcher.doc(hit.doc)
+                result_list.append({
+                    'doc_id': hit.doc,
+                    'filename': doc.get("filename"),
+                    'content': doc.get("content"),
+                    'score': hit.score
+                })
 
         results[query_title] = result_list
 
@@ -120,7 +125,7 @@ def main(query_root, index_root, store_folder):
         
         # get queries, compare to index, and save the results
         queries = retrieve_queries(query_folder)
-        search_results = search_index(queries, index_folder)
+        search_results = search_index(queries, index_folder, project)
         save_search_results(search_results, project, store_folder)
 
 

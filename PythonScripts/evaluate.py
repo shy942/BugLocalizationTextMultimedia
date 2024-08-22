@@ -38,6 +38,7 @@ def compute_evaluation(groundtruth_data, search_data):
     
     # iterate over each baseline query, gathering both the baseline and extended queries
     for query, search_results in search_data.items():
+    
         query_name, query_type = query
         if query_type != 'baseline':
             continue
@@ -116,8 +117,15 @@ def compute_evaluation(groundtruth_data, search_data):
         total_queries += 1
     
     # compute k percentages
-    hit_at_k_baseline_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_baseline.items()}
-    hit_at_k_extended_percent = {k: (count / total_queries) * 100 for k, count in hit_at_k_extended.items()}
+    hit_at_k_baseline_percent = {
+        k: (count / total_queries) * 100 if total_queries != 0 else 0 
+        for k, count in hit_at_k_baseline.items()
+    }
+    hit_at_k_extended_percent = {
+    k: (count / total_queries) * 100 if total_queries != 0 else 0 
+        for k, count in hit_at_k_extended.items()
+    }
+
     
     # Calculate final MRR by dividing the sum by the total number of queries
     mrr_baseline = mrr_baseline_sum / total_queries if total_queries > 0 else 0
@@ -227,8 +235,14 @@ def main (source_root, results_folder, evaluation_folder):
     # iterate over each project that has results computed for it
     for result in os.listdir(results_folder):
     
-        # preliminary setup, ensure everything exists
-        project = list(result)[0]
+        # preliminary setup, form strings and ensure everything exists
+        parts = result.split('_')
+        project = parts[0]
+        if parts[-2] == 'no':
+            stem_extension = 'no_stem'
+        else:
+            stem_extension = 'stem'
+        
         source_path = os.path.join(source_root, f"Project{project}", f"Project{project}")
         if not os.path.exists(source_path):
             print(f"Couldn't find source code and is skipping project {project}")
@@ -257,6 +271,8 @@ def main (source_root, results_folder, evaluation_folder):
             print("Error: no ground truth file found")
             print(f"Couldn't process and is skipping project {project}")
             continue
+            
+        print(f"starting project {project}_{stem_extension}")
         
         # gather the search results data
         search_result_path = os.path.join(results_folder, result)
@@ -274,7 +290,7 @@ def main (source_root, results_folder, evaluation_folder):
         bug_reports_missing_count = len(data['bug_reports_missing_groundtruth'])
         bug_report_count = bug_reports_considered_count + bug_reports_missing_count
         
-        storage_path = os.path.join(evaluation_folder, f"{project}_query_evaluation.txt")
+        storage_path = os.path.join(evaluation_folder, f"{project}_query_evaluation_{stem_extension}.txt")
         with open(storage_path, 'w') as file:
             file.write(f"Project {project}:\n\n")
             file.write(f"Total number of groundtruth files: {total_groundtruth_count}\n")
