@@ -35,7 +35,7 @@ def compute_evaluation(groundtruth_data, search_data):
     
     map_baseline_sum = 0
     map_extended_sum = 0
-    
+    print(search_data)
     # iterate over each baseline query, gathering both the baseline and extended queries
     for query, search_results in search_data.items():
     
@@ -186,7 +186,8 @@ def parse_groundtruth(groundtruth_file, source_code_root, search_data):
                 # format each path for comparison to search results
                 parts = line.split('.')
                 if len(parts) > 1:
-                    line = '/'.join(parts[:-1]) + '.' + parts[-1]
+                    line = os.path.join(*parts[:-1]) + '.' + parts[-1]
+
                 
                 # track whether the path actually exists
                 full_path = os.path.join(source_code_root, line)
@@ -196,10 +197,11 @@ def parse_groundtruth(groundtruth_file, source_code_root, search_data):
                 else:
                     non_existent_count += 1
                     missing_groundtruth.add(full_path)
-                    
+            
             # store the formatted data in a dictionary
-            groundtruth_data[query_name] = (groundtruth_entries, non_existent_count)
-        
+            if query_name in bug_reports:
+                groundtruth_data[query_name] = (groundtruth_entries, non_existent_count)
+    
     return groundtruth_data, len(all_groundtruth), len(missing_groundtruth)
 
 
@@ -220,9 +222,9 @@ def parse_search_results(search_result_file):
             # formatting each path for comparison to groundtruth
             for _ in range(result_count):
                 line = file.readline().strip()
-                parts = line.split('/')
+                parts = line.split(os.path.sep)
                 if len(parts) > 1:
-                    line = '/'.join(parts[1:])
+                    line = os.path.join(*parts[1:])
                 search_results.append(line)
                 
             search_data[(query_name, query_type)] = search_results

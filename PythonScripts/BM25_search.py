@@ -61,9 +61,6 @@ def search_index(queries, index_folder, project):
 
     results = {}
     
-    # java Integer.MAX_VALUE
-    searcher.setMaxClauseCount(2147483647)
-    
     # perform the search
     for query_title, query_str in queries.items():
     
@@ -98,7 +95,7 @@ def retrieve_queries(query_folder):
     for query_file in os.listdir(query_folder):
         query_file_path = os.path.join(query_folder, query_file)
         
-        with open(query_file_path, 'r') as file:
+        with open(query_file_path, 'r', encoding='utf-8') as file:
             query_str = file.read().strip()
             
         queries[query_file] = query_str

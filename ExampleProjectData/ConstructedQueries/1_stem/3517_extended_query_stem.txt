@@ -1,0 +1,1 @@
+color picker widget provid perfect color version branch dear gui version wip branch dock render compil imgui impl opengl cpp imgui impl sdl cpp compil oper window issu question choos color white drag circl color picker widget red float correct green blue variabl screenshot video advanc color color current origin ffffff static float test gui color edit color test test

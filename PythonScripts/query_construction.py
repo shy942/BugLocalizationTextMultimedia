@@ -9,9 +9,6 @@ download('punkt')
 
 # modify global variables to specify folder paths and stemming option 
 
-# use stemming when preprocessing text
-use_stemming = False
-
 # folder where all projects containing bug reports are stored
 project_bug_reports_root = "../ExampleProjectData/ProjectBugReports"
 
@@ -104,11 +101,11 @@ def preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, us
     os.makedirs(store_path, exist_ok=True)
     
     # save baseline query to file
-    with open(baseline_file_path, 'w') as file:
+    with open(baseline_file_path, 'w', encoding='utf-8') as file:
         file.write(baseline_query)
     
     # save extended query to file
-    with open(extended_file_path, 'w') as file:
+    with open(extended_file_path, 'w', encoding='utf-8') as file:
         file.write(extended_query)
         
     print(f"Stored queries for bug report {bug_report} in {store_path}")
@@ -116,11 +113,11 @@ def preprocess_bug_report(store_path, bug_report_path, bug_report, stopwords, us
 
 # read the stopwords
 def load_stopwords(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path, 'r', encoding='utf-8') as file:
         return set(word.strip() for word in file)
 
 
-def main(projects_root, store_root, use_stemming):
+def main(projects_root, store_root):
 
     stopwords = load_stopwords("stop_words_english.txt")
 
@@ -144,6 +141,6 @@ def main(projects_root, store_root, use_stemming):
 
 if __name__ == "__main__":
     
-    main(project_bug_reports_root, constructed_queries_root, use_stemming)
+    main(project_bug_reports_root, constructed_queries_root)
     
 
